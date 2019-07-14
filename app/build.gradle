@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: "androidx.navigation.safeargs"
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "29.0.0"
+    defaultConfig {
+        applicationId "com.example.basearchitecture"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    androidExtensions {
+        experimental = true
+    }
+
+    applicationVariants.all { variant ->
+        variant.resValue "string", "versionName", "Versión: " + variant.versionName
+    }
+
+    flavorDimensions "wibe", "environment"
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/values-es'] } }
+    productFlavors {
+        simulation {
+            applicationId "com.example.basearchitecture.simulation"
+            dimension "environment"
+        }
+        qa {
+            applicationId "com.example.basearchitecture.qa"
+            dimension "environment"
+        }
+        production {
+            applicationId "com.example.basearchitecture"
+            dimension "environment"
+        }
+        wibe {
+            applicationIdSuffix ""
+            dimension "wibe"
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //multidex
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    //support
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+
+    //okhttp
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+
+    // dagger
+    kapt "com.google.dagger:dagger-compiler:2.16"
+    implementation "com.google.dagger:dagger:2.16"
+
+    // dagger android
+    kapt "com.google.dagger:dagger-android-processor:2.16"
+    implementation "com.google.dagger:dagger-android:2.16"
+    implementation "com.google.dagger:dagger-android-support:2.16"
+
+    //Navigation
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
+
+    //test
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.21.0"
+    androidTestImplementation 'androidx.test:runner:1.1.2-alpha01'
+    androidTestImplementation 'androidx.test:rules:1.1.2-alpha01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+}

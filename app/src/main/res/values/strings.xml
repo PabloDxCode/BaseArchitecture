@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">BaseArchitecture</string>
+
+    <!-- Splash view -->
+    <string name="text_alert_message">Permisos necesarios</string>
+
+    <string name="login_date_label"><![CDATA[<i>(Última sesión %1$s)</i>]]></string>
+
+    <!-- Strings error -->
+    <string name="error_eai0000">Los datos introducidos son incorrectos.</string>
+    <string name="error_eai0002">Error de acceso a datos del cliente</string>
+    <string name="error_eai0003">Error al instanciar el controlador solicitado. No existe controlador para ese mecanismo</string>
+    <string name="error_eai0004">Error no conocido en el controlador</string>
+    <string name="error_eai0005">Los datos introducidos no son correctos. Inténtelo de nuevo</string>
+    <string name="error_eai0006">Error primer acceso sin parámetro origen</string>
+    <string name="error_eai0007">Error en el formato del parámetro</string>
+    <string name="error_eai0008">El usuario está bloqueado</string>
+    <string name="error_eai0009">Error, el usuario está bloqueado</string>
+    <string name="error_eai0010">Error, el usuario no pertenece al grupo</string>
+    <string name="error_eai0011">Error, el usuario o grupo no existen</string>
+    <string name="error_eai0012">Error no conocido al validar usuario-grupo en el módulo de operaciones</string>
+    <string name="error_eai0013">Usuario Bloqueado</string>
+    <string name="error_eai0014">No existe el usuario</string>
+    <string name="error_eai0015">Operación de usuario ocupada</string>
+    <string name="error_eai0016">Error de conexión</string>
+    <string name="error_eai0017">Error de configuración</string>
+    <string name="error_eai0018">Fallo de parámetros</string>
+    <string name="error_eai0019">Error desconocido</string>
+    <string name="error_eai0020">Error de login por Token (El estado del usuario no es correcto)</string>
+    <string name="error_eai0021">Petición no Aceptada. Consulte con su Ejecutivo</string>
+    <string name="error_eai0022">El método de validación devuelto por el usuario no es un método válido</string>
+    <string name="error_eai0023">El usuario está bloqueado temporalmente</string>
+    <string name="error_eai0024">El acceso desde IP actal no esta permitido</string>
+    <string name="error_eai0025">Usuario perteneciente a Empresa Bloqueada</string>
+    <string name="error_eai0026">Error en la validación de la clave</string>
+    <string name="error_eai0027">Error en la validación de la clave de operaciones</string>
+    <string name="error_eai0028">La clave coincidente con n últimas clave</string>
+    <string name="error_eai0029">Usuario está bloqueado temporalmente</string>
+    <string name="error_eai0030">Clave de Operaciones igual que alias</string>
+    <string name="error_eai0031">Clave de Operaciones ya existente</string>
+    <string name="error_eai0032">Usuario no existe</string>
+    <string name="error_eai0033">Error acceso ldap al dar de alta la Clave de Operaciones</string>
+
+    <string name="error_generic_response">Operativa temporalmente no disponible</string>
+    <string name="error_form">Datos incorrectos</string>
+    <string name="error_email">Error en correo electronico.</string>
+    <string name="error_psw">Error en contraseña.</string>
+    <string name="error_data">Error al hacer login.</string>
+    <string name="error_session">Error al iniciar sesión.</string>
+    <string name="error_wifi">Sin conexión a internet.</string>
+    <string name="error_pending_status">Ususario pendiente de activación</string>
+    <string name="error_nonexistent_status">El usuario introducido es incorrecto. Por favor intentelo de nuevo</string>
+    <string name="error_time_out">Se ha excedido el tiempo de conexión, vuelve a intentarlo.</string>
+
+    <!-- Extra strings -->
+    <string name="text_alert">Alerta</string>
+    <string name="text_alert_accept">Aceptar</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>

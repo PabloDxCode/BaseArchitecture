@@ -1,0 +1,6 @@
+projectKey=BaseArchitecture
+serverUrl=http://localhost:9000
+serverVersion=6.7.5.38563
+dashboardUrl=http://localhost:9000/dashboard/index/BaseArchitecture
+ceTaskId=AWvvT32QIQ4sbc4FlQhM
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AWvvT32QIQ4sbc4FlQhM
