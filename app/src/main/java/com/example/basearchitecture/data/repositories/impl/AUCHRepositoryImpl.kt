@@ -1,67 +1,98 @@
 package com.example.basearchitecture.data.repositories.impl
 
-import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.data.network.Network
 import com.example.basearchitecture.data.network.RequestData
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
+import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
 import com.example.basearchitecture.data.repositories.AUCHRepository
-import com.example.basearchitecture.data.repositories.listeners.ResponseListener
 import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import javax.inject.Inject
 
-class AUCHRepositoryImpl @Inject constructor(val network: Network) : AUCHRepository, ResponseListener {
+/**
+ * AUCHRepositoryImpl
+ */
+class AUCHRepositoryImpl @Inject constructor(val network: Network) : BaseRepository(), AUCHRepository {
 
     /**
-     * Use case listener
+     * Method to set map of headers
+     *
+     * @param headers map of headers
+     *
+     * @return this
      */
-    var mUseCaseListener: UseCaseListener? = null
+    override fun setHeaders(headers: Map<String, String>): AUCHRepositoryImpl {
+        this.mHeaders = headers
+        return this
+    }
+
+    /**
+     * Method to set request body
+     *
+     * @param requestBody request body
+     *
+     * @return this
+     */
+    override fun setRequestBody(requestBody: String): AUCHRepository {
+        this.mRequestBody = requestBody
+        return this
+    }
+
+    /**
+     * Method to set map params
+     *
+     * @param params Map<String, String>?
+     *
+     * @return this
+     */
+    override fun setParams(params: Map<String, String>): AUCHRepository {
+        this.mParams = params
+        return this
+    }
+
+    /**
+     * Method to set success object response
+     *
+     * @param successResponse success object response
+     *
+     * @return this
+     */
+    override fun setSuccessResponse(successResponse: Class<*>): AUCHRepository {
+        this.mSuccessObjectResponse = successResponse
+        return this
+    }
+
+    /**
+     * Method to set error object response
+     *
+     * @param errorResponse error object response
+     *
+     * @return this
+     */
+    override fun setErrorResponse(errorResponse: Class<*>): AUCHRepository {
+        this.mErrorObjectResponse = errorResponse
+        return this
+    }
 
     /**
      * Method to invoke repository service
      *
-     * @param requestData request data
+     * @param requestCode request code
      * @param useCaseListener use case listener
+     * @param zoneType zone type
      */
-    override fun invokeAUCHService(requestData: RequestData, useCaseListener: UseCaseListener) {
+    override fun invokeWibeService(requestCode: String, useCaseListener: UseCaseListener, zoneType: ZoneTypeEnum) {
         this.mUseCaseListener = useCaseListener
+        val requestData = RequestData()
+            .setHeaders(mHeaders!!)
+            .setRequestCode(requestCode)
+            .setRequestBody(mRequestBody!!)
+            .setParams(mParams!!)
+            .setZoneType(zoneType)
+            .setSuccessObjectResponse(mSuccessObjectResponse!!)
+            .setErrorObjectResponse(mErrorObjectResponse!!)
+
         network.init(requestData, this, ApiServiceEnum.AUCH)
         network.execute()
-    }
-
-    /**
-     * Method that is executed when the answer is correct
-     *
-     * @param response Response object type
-     */
-    override fun onSuccessResponse(response: String) {
-        mUseCaseListener!!.onSuccess(response)
-    }
-
-    /**
-     * Method that is executed when the answer is correct
-     *
-     * @param response generic object response
-     */
-    override fun onSuccessResponseObj(response: Any) {
-        mUseCaseListener!!.onSuccess(response)
-    }
-
-    /**
-     * Method that is executed when the request fails
-     *
-     * @param error response ERROR
-     */
-    override fun onErrorResponse(error: Any) {
-        mUseCaseListener!!.onError(error)
-    }
-
-    /**
-     * Method that is executed when the request fails
-     *
-     * @param error generic error response
-     */
-    override fun onErrorServer(error: ICommonError) {
-        mUseCaseListener!!.onErrorServer(error)
     }
 
 }

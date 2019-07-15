@@ -12,6 +12,10 @@ class RequestData {
      */
     private var headers: Map<String, String>? = null
     /**
+     * Request code
+     */
+    private var requestCode: String? = null
+    /**
      * Request body
      */
     private var requestBody: String? = null
@@ -19,10 +23,6 @@ class RequestData {
      * Map of request params
      */
     private var params: Map<String, String>? = null
-    /**
-     * Request code
-     */
-    private var requestCode: String? = null
     /**
      * Zone type enum
      */
@@ -67,6 +67,27 @@ class RequestData {
     }
 
     /**
+     * Method to get request code
+     *
+     * @return request code
+     */
+    fun getRequestCode(): String? {
+        return requestCode
+    }
+
+    /**
+     * Method to set request code
+     *
+     * @param requestCode request code
+     *
+     * @return this
+     */
+    fun setRequestCode(requestCode: String): RequestData {
+        this.requestCode = requestCode
+        return this
+    }
+
+    /**
      * Method to get request body
      *
      * @return request body
@@ -105,27 +126,6 @@ class RequestData {
      */
     fun setParams(params: Map<String, String>): RequestData {
         this.params = params
-        return this
-    }
-
-    /**
-     * Method to get request code
-     *
-     * @return request code
-     */
-    fun getRequestCode(): String? {
-        return requestCode
-    }
-
-    /**
-     * Method to set request code
-     *
-     * @param requestCode request code
-     *
-     * @return this
-     */
-    fun setRequestCode(requestCode: String): RequestData {
-        this.requestCode = requestCode
         return this
     }
 
@@ -183,12 +183,12 @@ class RequestData {
     /**
      * Method to set error object response
      *
-     * @param errorObjectResponse error object response
+     * @param errorResponse error object response
      *
      * @return this
      */
-    fun setErrorObjectResponse(errorObjectResponse: Class<*>): RequestData {
-        this.errorObjectResponse = errorObjectResponse
+    fun setErrorObjectResponse(errorResponse: Class<*>): RequestData {
+        this.errorObjectResponse = errorResponse
         return this
     }
 

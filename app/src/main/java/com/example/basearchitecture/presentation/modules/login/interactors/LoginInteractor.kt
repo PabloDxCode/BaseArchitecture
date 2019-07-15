@@ -2,12 +2,7 @@ package com.example.basearchitecture.presentation.modules.login.interactors
 
 import com.example.basearchitecture.data.models.User
 import com.example.basearchitecture.data.models.error.AppError
-import com.example.basearchitecture.domain.businesslogiccase.login.LoginUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.GenerateSessionIdUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.LoginSlodUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.LoginStatusUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.GetUserInfoUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.UpdateLoginDateUseCase
+import com.example.basearchitecture.domain.businesslogiccase.login.*
 import com.example.basearchitecture.presentation.modules.login.contracts.LoginContracts
 import com.example.basearchitecture.presentation.modules.login.presenters.listeners.LoginPresenterListener
 import javax.inject.Inject
@@ -28,7 +23,8 @@ class LoginInteractor @Inject constructor(
     val loginSlodUseCase: LoginSlodUseCase,
     val loginStatusUseCase: LoginStatusUseCase,
     val getUserInfoUseCase: GetUserInfoUseCase,
-    val updateLoginDateUseCase: UpdateLoginDateUseCase
+    val updateLoginDateUseCase: UpdateLoginDateUseCase,
+    val saveUserInfoUseCase: SaveUserInfoUseCase
 ) : LoginContracts.LoginInteractor {
 
     /**
@@ -128,7 +124,9 @@ class LoginInteractor @Inject constructor(
      * @param userInfo user info
      */
     override fun saveUserInfo(userInfo: User) {
-        updateLoginDate()
+        saveUserInfoUseCase.onSuccess { updateLoginDate() }
+            .onErrorResponse { mLoginPresenterListener!!.onRequestError(it) }
+            .execute(userInfo)
     }
 
     /**

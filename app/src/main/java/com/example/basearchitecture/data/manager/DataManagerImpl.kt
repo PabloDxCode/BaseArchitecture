@@ -4,8 +4,8 @@ import com.example.basearchitecture.data.models.error.ErrorResponse
 import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.data.models.response.*
 import com.example.basearchitecture.data.network.ConstantsService
-import com.example.basearchitecture.data.network.RequestData
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
+import com.example.basearchitecture.data.repositories.DataBaseRepository
 import com.example.basearchitecture.data.repositories.WibeRepository
 import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import com.google.gson.Gson
@@ -14,7 +14,7 @@ import javax.inject.Inject
 /**
  * DataManagerImpl
  */
-class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
+class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository, val dataBaseRepository: DataBaseRepository) :
     DataManager {
 
     /**
@@ -24,12 +24,11 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
      * @param useCaseListener generic use case listener
      */
     override fun login(userStatusRequest: UserStatusRequest, useCaseListener: UseCaseListener) {
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.LOGIN_SERVICE_CODE)
+        wibeRepository
             .setRequestBody(Gson().toJson(userStatusRequest))
-            .setSuccessObjectResponse(UserStatusResponse::class.java)
-            .setErrorObjectResponse(ErrorResponse::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+            .setSuccessResponse(UserStatusResponse::class.java)
+            .setErrorResponse(ErrorResponse::class.java)
+            .invokeWibeService(ConstantsService.LOGIN_SERVICE_CODE, useCaseListener)
     }
 
     /**
@@ -39,12 +38,11 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
      * @param useCaseListener generic use case listener
      */
     override fun generateSessionId(userStatusRequest: UserStatusRequest, useCaseListener: UseCaseListener) {
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.GENERATE_SESSION_ID_SERVICE_CODE)
+        wibeRepository
             .setRequestBody(Gson().toJson(userStatusRequest))
-            .setSuccessObjectResponse(GenerateIdSessionResponse::class.java)
-            .setErrorObjectResponse(ErrorResponse::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+            .setSuccessResponse(GenerateIdSessionResponse::class.java)
+            .setErrorResponse(ErrorResponse::class.java)
+            .invokeWibeService(ConstantsService.GENERATE_SESSION_ID_SERVICE_CODE, useCaseListener)
     }
 
     /**
@@ -63,12 +61,9 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
         params["eai_URLDestino"] =
                 "https://qa.wibe.com.mx/mwib_mult_web_mwibprivatewebapp_01/api/loginStatus&idioma=CAS"
 
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.LOGIN_SLOD_SERVICE_CODE)
+        wibeRepository
             .setParams(params)
-            .setSuccessObjectResponse(String::class.java)
-            .setErrorObjectResponse(String::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+            .invokeWibeService(ConstantsService.LOGIN_SLOD_SERVICE_CODE, useCaseListener)
     }
 
     /**
@@ -77,11 +72,9 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
      * @param useCaseListener generic use case listener
      */
     override fun loginStatus(useCaseListener: UseCaseListener) {
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.LOGIN_STATUS_SERVICE_CODE)
-            .setSuccessObjectResponse(LoginStatusResponse::class.java)
-            .setErrorObjectResponse(Object::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+        wibeRepository
+            .setSuccessResponse(LoginStatusResponse::class.java)
+            .invokeWibeService(ConstantsService.LOGIN_STATUS_SERVICE_CODE, useCaseListener)
     }
 
     /**
@@ -94,13 +87,10 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
         val params = HashMap<String, String>()
         params["idWibe"] = idSession
 
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.GET_USER_INFO_SERVICE_CODE)
+        wibeRepository
             .setParams(params)
-            .setZoneType(ZoneTypeEnum.PRIVATE)
-            .setSuccessObjectResponse(GetUserInformationResponse::class.java)
-            .setErrorObjectResponse(String::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+            .setSuccessResponse(GetUserInformationResponse::class.java)
+            .invokeWibeService(ConstantsService.GET_USER_INFO_SERVICE_CODE, useCaseListener, ZoneTypeEnum.PRIVATE)
     }
 
     /**
@@ -110,13 +100,11 @@ class DataManagerImpl @Inject constructor(val wibeRepository: WibeRepository) :
      * @param useCaseListener generic use case listener
      */
     override fun updateLoginDate(userStatusRequest: UserStatusRequest, useCaseListener: UseCaseListener) {
-        val requestData = RequestData()
-            .setRequestCode(ConstantsService.UPDATE_LOGIN_DATE_SERVICE_CODE)
+        wibeRepository
             .setRequestBody(Gson().toJson(userStatusRequest))
-            .setZoneType(ZoneTypeEnum.PRIVATE)
-            .setSuccessObjectResponse(ErrorResponse::class.java)
-            .setErrorObjectResponse(ErrorResponse::class.java)
-        wibeRepository.invokeWibeService(requestData, useCaseListener)
+            .setSuccessResponse(ErrorResponse::class.java)
+            .setErrorResponse(ErrorResponse::class.java)
+            .invokeWibeService(ConstantsService.UPDATE_LOGIN_DATE_SERVICE_CODE, useCaseListener, ZoneTypeEnum.PRIVATE)
     }
 
 }

@@ -22,7 +22,8 @@ import javax.inject.Singleton
         InteractorsModule::class,
         UseCasesModule::class,
         DataManagerModule::class,
-        RepositoryModule::class
+        RepositoryModule::class,
+        DatabaseModule::class
     ]
 )
 interface ApplicationComponent {

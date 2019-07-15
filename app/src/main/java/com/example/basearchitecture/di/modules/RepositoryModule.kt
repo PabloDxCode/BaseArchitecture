@@ -2,8 +2,10 @@ package com.example.basearchitecture.di.modules
 
 import com.example.basearchitecture.data.network.Network
 import com.example.basearchitecture.data.repositories.AUCHRepository
+import com.example.basearchitecture.data.repositories.DataBaseRepository
 import com.example.basearchitecture.data.repositories.WibeRepository
 import com.example.basearchitecture.data.repositories.impl.AUCHRepositoryImpl
+import com.example.basearchitecture.data.repositories.impl.DataBaseRepositoryImpl
 import com.example.basearchitecture.data.repositories.impl.WibeRepositoryImpl
 import dagger.Module
 import dagger.Provides
@@ -33,5 +35,13 @@ class RepositoryModule {
      */
     @Provides
     fun provideAUCHRepository(network: Network): AUCHRepository = AUCHRepositoryImpl(network)
+
+    /**
+     * Method to provide database repository
+     *
+     * @return DataBaseRepository
+     */
+    @Provides
+    fun provideDataBaseRepository(): DataBaseRepository = DataBaseRepositoryImpl()
 
 }

@@ -76,4 +76,15 @@ class UseCasesModule {
     fun provideUpdateLoginDateUseCaseImpl(dataManager: DataManager): UpdateLoginDateUseCase =
         UpdateLoginDateUseCaseImpl(dataManager)
 
+    /**
+     * Method to provide save user information use case
+     *
+     * @param dataManager data manager instance
+     *
+     * @return SaveUserInfoUseCase
+     */
+    @Provides
+    fun provideSaveUserInfoUseCaseImpl(dataManager: DataManager): SaveUserInfoUseCase =
+        SaveUserInfoUseCaseImpl(dataManager)
+
 }

@@ -21,15 +21,16 @@ class InteractorsModule {
      * @param loginStatusUseCase login status use case instance
      * @param getUserInfoUseCase get user info use case instance
      * @param updateLoginDateUseCase update login date use case instance
+     * @param saveUserInfoUseCase save user info use case instance
      *
      * @return LoginContracts.LoginInteractor
      */
     @Provides
-    fun provideLoginInteractor(loginUseCase: LoginUseCase, generateSessionIdUseCase: GenerateSessionIdUseCase,
-        loginSlodUseCase: LoginSlodUseCase, loginStatusUseCase: LoginStatusUseCase,
-        getUserInfoUseCase: GetUserInfoUseCase, updateLoginDateUseCase: UpdateLoginDateUseCase
+    fun provideLoginInteractor(loginUseCase: LoginUseCase, generateSessionIdUseCase: GenerateSessionIdUseCase, loginSlodUseCase: LoginSlodUseCase,
+                               loginStatusUseCase: LoginStatusUseCase, getUserInfoUseCase: GetUserInfoUseCase, updateLoginDateUseCase: UpdateLoginDateUseCase,
+                               saveUserInfoUseCase: SaveUserInfoUseCase
     ): LoginContracts.LoginInteractor =
         LoginInteractor(loginUseCase, generateSessionIdUseCase, loginSlodUseCase, loginStatusUseCase,
-            getUserInfoUseCase, updateLoginDateUseCase)
+            getUserInfoUseCase, updateLoginDateUseCase, saveUserInfoUseCase)
 
 }
