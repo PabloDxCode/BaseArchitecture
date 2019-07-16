@@ -9,7 +9,9 @@
     <!-- Strings error -->
     <string name="error_eai0000">Los datos introducidos son incorrectos.</string>
     <string name="error_eai0002">Error de acceso a datos del cliente</string>
-    <string name="error_eai0003">Error al instanciar el controlador solicitado. No existe controlador para ese mecanismo</string>
+    <string name="error_eai0003">Error al instanciar el controlador solicitado. No existe controlador para ese
+        mecanismo
+    </string>
     <string name="error_eai0004">Error no conocido en el controlador</string>
     <string name="error_eai0005">Los datos introducidos no son correctos. Inténtelo de nuevo</string>
     <string name="error_eai0006">Error primer acceso sin parámetro origen</string>

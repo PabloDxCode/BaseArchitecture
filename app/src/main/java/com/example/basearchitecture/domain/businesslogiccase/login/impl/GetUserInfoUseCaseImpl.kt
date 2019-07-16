@@ -5,7 +5,6 @@ import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.data.models.response.GetUserInformationResponse
 import com.example.basearchitecture.domain.businesslogiccase.login.GetUserInfoUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import javax.inject.Inject
 
 /**
@@ -54,35 +53,14 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
      * @param sessionId session id param
      */
     override fun execute(sessionId: String) {
-        dataManager.getUserInfo(sessionId, object : UseCaseListener{
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                mSuccessGetUserInfo!!.invoke(response as GetUserInformationResponse)
-            }
+        val params = HashMap<String, String>()
+        params["idWibe"] = sessionId
 
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                mErrorResponse!!.invoke(AppError(null, "generic_response"))
-            }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-
-        })
+        dataManager
+            .onSuccess { mSuccessGetUserInfo!!.invoke(it as GetUserInformationResponse) }
+            .onError { mErrorResponse!!.invoke(AppError(null, "generic_response")) }
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .getUserInfo(params)
     }
 
 }

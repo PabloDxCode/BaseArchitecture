@@ -6,7 +6,7 @@ import com.example.basearchitecture.data.models.error.ErrorResponse
 import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.domain.businesslogiccase.login.UpdateLoginDateUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
+import com.google.gson.Gson
 import javax.inject.Inject
 
 /**
@@ -55,35 +55,16 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
      * @param email email param
      */
     override fun execute(email: String) {
-        dataManager.updateLoginDate(UserStatusRequest(email), object : UseCaseListener{
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                mSuccessUpdateLoginDate!!.invoke()
-            }
+        val requestBody = Gson().toJson(UserStatusRequest(email))
 
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                val errorResponse = error as ErrorResponse
+        dataManager
+            .onSuccess { mSuccessUpdateLoginDate!!.invoke() }
+            .onError {
+                val errorResponse = it as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(),null))
             }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-        })
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .updateLoginDate(requestBody)
     }
 
 }

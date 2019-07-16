@@ -5,7 +5,6 @@ import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.data.models.response.LoginStatusResponse
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginStatusUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import javax.inject.Inject
 
 /**
@@ -52,34 +51,11 @@ class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager): 
      * Execute method
      */
     override fun execute() {
-        dataManager.loginStatus(object : UseCaseListener {
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                manageResponse(response as LoginStatusResponse)
-            }
-
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                mErrorResponse!!.invoke(AppError(null, "session"))
-            }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-        })
+        dataManager
+            .onSuccess { manageResponse(it as LoginStatusResponse) }
+            .onError { mErrorResponse!!.invoke(AppError(null, "session")) }
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .loginStatus()
     }
 
     /**

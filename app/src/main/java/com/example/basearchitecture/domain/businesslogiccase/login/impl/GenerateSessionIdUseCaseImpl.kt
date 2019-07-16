@@ -7,7 +7,7 @@ import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.data.models.response.GenerateIdSessionResponse
 import com.example.basearchitecture.domain.businesslogiccase.login.GenerateSessionIdUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
+import com.google.gson.Gson
 import javax.inject.Inject
 
 /**
@@ -56,37 +56,19 @@ class GenerateSessionIdUseCaseImpl @Inject constructor(val dataManager: DataMana
      * @param email email param
      */
     override fun execute(email: String) {
-        dataManager.generateSessionId(UserStatusRequest(email), object : UseCaseListener {
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                val sessionId = (response as GenerateIdSessionResponse).getSessionId()
+        val requestBody = Gson().toJson(UserStatusRequest(email))
+
+        dataManager
+            .onSuccess {
+                val sessionId = (it as GenerateIdSessionResponse).getSessionId()
                 mSuccessSessionId!!.invoke(sessionId!!)
             }
-
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                val errorResponse = error as ErrorResponse
+            .onError {
+                val errorResponse = it as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))
             }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-
-        })
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .generateSessionId(requestBody)
     }
 
 }

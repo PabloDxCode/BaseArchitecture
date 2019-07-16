@@ -11,7 +11,7 @@ import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
 import com.example.basearchitecture.data.utils.Utils
-import com.example.basearchitecture.presentation.app.config.EnvironmentUrlEnum
+import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
@@ -120,14 +120,18 @@ class Network @Inject constructor(): INetwork{
      * Methdo to execute service
      */
     override fun execute() {
-        //if(ConfigApp.ourInstance.getCheckConnection().isConnected()){
-            mApiInterface = mRetrofit!!.create(ConnectionApiService::class.java)
-            val networkParams = ConfigApp.ourInstance.getReadFileConfig()
-                .getRequestParams(mRequestData!!.getRequestCode()!!, mApiService!!)
-            configureRequest(networkParams!!)
-        /*} else {
-            mResponseListener!!.onErrorServer(AppError(null, "error_wifi"))
-        }*/
+        try {
+            if (ConfigApp.ourInstance.getCheckConnection().isConnected()) {
+                mApiInterface = mRetrofit!!.create(ConnectionApiService::class.java)
+                val networkParams = ConfigApp.ourInstance.getReadFileConfig()
+                    .getRequestParams(mRequestData!!.getRequestCode()!!, mApiService!!)
+                configureRequest(networkParams!!)
+            } else {
+                mResponseListener!!.onErrorServer(AppError(null, "wifi"))
+            }
+        } catch (e: Exception){
+            mResponseListener!!.onErrorServer(AppError(null, "generic_error", e.message))
+        }
     }
 
     /**

@@ -11,9 +11,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import timber.log.Timber
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
-import java.util.logging.Logger
 
 /**
  * RetrofitClient
@@ -36,8 +36,7 @@ class RetrofitClient(val apiService: ApiServiceEnum) {
      */
     fun getLogger(): HttpLoggingInterceptor.Logger {
         return HttpLoggingInterceptor.Logger {
-            val log = Logger.getLogger(ConstantsService.NETWORK_TAG)
-            log.info(it)
+            Timber.i(it)
         }
     }
 

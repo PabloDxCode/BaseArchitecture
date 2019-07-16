@@ -5,9 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.modules.login.controllers.LoginController">
+    tools:context=".ui.modules.login.controller.LoginController">
 
-    <include layout="@layout/toolbar_view" />
+    <include layout="@layout/toolbar_view"/>
 
     <ImageView
         android:layout_width="0dp"
@@ -17,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     <TextView
         android:id="@+id/tvTitle"
@@ -30,7 +30,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
     <EditText
         android:id="@+id/etEmail"
@@ -46,7 +46,7 @@
         android:textColor="@color/light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"/>
 
     <EditText
         android:id="@+id/etPassword"
@@ -62,7 +62,7 @@
         android:textColor="@color/light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etEmail" />
+        app:layout_constraintTop_toBottomOf="@id/etEmail"/>
 
     <Button
         android:id="@+id/btLogin"
@@ -77,6 +77,31 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@id/etPassword"/>
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/yellow"
+        android:layout_marginTop="25dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text="¿Olvidaste tu contraseña?"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvForgotPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/yellow"
+        android:textStyle="bold"
+        android:layout_marginTop="35dp"
+        android:textSize="20sp"
+        android:text="Registrate en wibe >"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

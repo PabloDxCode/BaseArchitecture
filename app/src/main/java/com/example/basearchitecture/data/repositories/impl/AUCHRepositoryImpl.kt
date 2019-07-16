@@ -3,91 +3,25 @@ package com.example.basearchitecture.data.repositories.impl
 import com.example.basearchitecture.data.network.Network
 import com.example.basearchitecture.data.network.RequestData
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
-import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
-import com.example.basearchitecture.data.repositories.AUCHRepository
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import javax.inject.Inject
 
 /**
  * AUCHRepositoryImpl
  */
-class AUCHRepositoryImpl @Inject constructor(val network: Network) : BaseRepository(), AUCHRepository {
-
-    /**
-     * Method to set map of headers
-     *
-     * @param headers map of headers
-     *
-     * @return this
-     */
-    override fun setHeaders(headers: Map<String, String>): AUCHRepositoryImpl {
-        this.mHeaders = headers
-        return this
-    }
-
-    /**
-     * Method to set request body
-     *
-     * @param requestBody request body
-     *
-     * @return this
-     */
-    override fun setRequestBody(requestBody: String): AUCHRepository {
-        this.mRequestBody = requestBody
-        return this
-    }
-
-    /**
-     * Method to set map params
-     *
-     * @param params Map<String, String>?
-     *
-     * @return this
-     */
-    override fun setParams(params: Map<String, String>): AUCHRepository {
-        this.mParams = params
-        return this
-    }
-
-    /**
-     * Method to set success object response
-     *
-     * @param successResponse success object response
-     *
-     * @return this
-     */
-    override fun setSuccessResponse(successResponse: Class<*>): AUCHRepository {
-        this.mSuccessObjectResponse = successResponse
-        return this
-    }
-
-    /**
-     * Method to set error object response
-     *
-     * @param errorResponse error object response
-     *
-     * @return this
-     */
-    override fun setErrorResponse(errorResponse: Class<*>): AUCHRepository {
-        this.mErrorObjectResponse = errorResponse
-        return this
-    }
+class AUCHRepositoryImpl @Inject constructor(val network: Network) : BaseRepositoryImpl() {
 
     /**
      * Method to invoke repository service
      *
      * @param requestCode request code
-     * @param useCaseListener use case listener
-     * @param zoneType zone type
      */
-    override fun invokeWibeService(requestCode: String, useCaseListener: UseCaseListener, zoneType: ZoneTypeEnum) {
-        this.mUseCaseListener = useCaseListener
+    override fun invokeWibeService(requestCode: String) {
         val requestData = RequestData()
             .setHeaders(mHeaders!!)
             .setRequestCode(requestCode)
             .setRequestBody(mRequestBody!!)
             .setParams(mParams!!)
-            .setZoneType(zoneType)
+            .setZoneType(mZoneType)
             .setSuccessObjectResponse(mSuccessObjectResponse!!)
             .setErrorObjectResponse(mErrorObjectResponse!!)
 

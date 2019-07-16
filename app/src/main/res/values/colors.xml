@@ -9,4 +9,5 @@
     <color name="grey_hint">#ffb8b8b8</color>
     <color name="black_transparent">#AA000000</color>
     <color name="transparent">#05000000</color>
+    <color name="yellow">#EFFE00</color>
 </resources>

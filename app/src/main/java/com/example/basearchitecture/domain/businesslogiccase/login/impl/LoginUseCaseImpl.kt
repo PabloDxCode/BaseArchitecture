@@ -11,7 +11,7 @@ import com.example.basearchitecture.domain.businesslogiccase.helpercommon.valida
 import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidFieldsHelper
 import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidationArgs
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
+import com.google.gson.Gson
 import javax.inject.Inject
 
 /**
@@ -129,35 +129,16 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
      * Method to do login
      */
     fun doLogin() {
-        dataManager.login(UserStatusRequest(mEmail!!), object : UseCaseListener {
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                validateLoginResponse(response as UserStatusResponse)
-            }
+        val requestBody = Gson().toJson(UserStatusRequest(mEmail!!))
 
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                val errorResponse = error as ErrorResponse
+        dataManager
+            .onSuccess { validateLoginResponse(it as UserStatusResponse) }
+            .onError {
+                val errorResponse = it as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))
             }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-        })
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .login(requestBody)
     }
 
     /**

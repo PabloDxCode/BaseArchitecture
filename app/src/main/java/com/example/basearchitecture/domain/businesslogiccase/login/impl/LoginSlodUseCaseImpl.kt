@@ -5,7 +5,6 @@ import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.ICommonError
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginSlodUseCase
 import com.example.basearchitecture.domain.businesslogiccase.login.helper.SessionErrorHelper
-import com.example.basearchitecture.domain.businesslogiccase.login.listeners.UseCaseListener
 import javax.inject.Inject
 
 /**
@@ -55,34 +54,19 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
      * @param password password param
      */
     override fun execute(email: String, password: String) {
-        dataManager.loginSlod(email, password, object : UseCaseListener{
-            /**
-             * Success response
-             *
-             * @param response response object
-             */
-            override fun onSuccess(response: Any) {
-                manageResponse(response.toString())
-            }
+        val params = HashMap<String, String>()
+        params["eai_user"] = "$email-w"
+        params["idWibe"] = ""
+        params["eai_password"] = password
+        params["origen"] = "wibe"
+        params["eai_URLDestino"] =
+                "https://qa.wibe.com.mx/mwib_mult_web_mwibprivatewebapp_01/api/loginStatus&idioma=CAS"
 
-            /**
-             * Error response
-             *
-             * @param error error object
-             */
-            override fun onError(error: Any) {
-                mErrorResponse!!.invoke(AppError(null, "session"))
-            }
-
-            /**
-             * Error response
-             *
-             * @param error generic error
-             */
-            override fun onErrorServer(error: ICommonError) {
-                mErrorResponse!!.invoke(error)
-            }
-        })
+        dataManager
+            .onSuccess { manageResponse(it.toString()) }
+            .onError { mErrorResponse!!.invoke(AppError(null, "session")) }
+            .onServerError { mErrorResponse!!.invoke(it) }
+            .loginSlod(params)
     }
 
     /**

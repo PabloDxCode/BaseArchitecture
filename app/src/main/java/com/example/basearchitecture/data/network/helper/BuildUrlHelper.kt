@@ -3,7 +3,7 @@ package com.example.basearchitecture.data.network.helper
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
 import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
-import com.example.basearchitecture.presentation.app.config.EnvironmentUrlEnum
+import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import java.lang.StringBuilder
 
 /**
