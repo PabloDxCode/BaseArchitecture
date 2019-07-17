@@ -6,7 +6,6 @@ import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.network.ConstantsService
 import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginSlodUseCase
-import com.example.basearchitecture.domain.businesslogiccase.login.helper.SessionErrorHelper
 import javax.inject.Inject
 
 /**
@@ -78,11 +77,11 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
      * @return response service
      */
     private fun manageResponse(response: String) {
-        val sessionResponse = SessionErrorHelper.getSessionResponse(response)
-        if (sessionResponse.isSessionActive) {
+        val codeError = ResponseErrorType.filterError(response)
+        if(codeError == null){
             mIsSessionStarted!!.invoke()
         } else {
-            mErrorResponse!!.invoke(AppError(null, sessionResponse.errorCode))
+            mErrorResponse!!.invoke(AppError(null, codeError))
         }
     }
 
