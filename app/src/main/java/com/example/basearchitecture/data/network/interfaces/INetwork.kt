@@ -1,6 +1,6 @@
 package com.example.basearchitecture.data.network.interfaces
 
-import com.example.basearchitecture.data.network.RequestData
+import com.example.basearchitecture.data.network.models.RequestData
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
 

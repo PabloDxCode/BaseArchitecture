@@ -7,7 +7,6 @@ import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.data.network.ConstantsService
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
-import com.example.basearchitecture.data.utils.Utils
 import com.example.basearchitecture.domain.businesslogiccase.login.UpdateLoginDateUseCase
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -61,7 +60,6 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
         val requestBody = Gson().toJson(UserStatusRequest(email))
 
         dataManager.getWibeRepository()
-            .setHeaders(Utils.getHeaders())
             .setRequestBody(requestBody)
             .setZoneType(ZoneTypeEnum.PRIVATE)
             .setSuccessResponse(ErrorResponse::class.java)

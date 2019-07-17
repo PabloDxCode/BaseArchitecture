@@ -19,10 +19,6 @@ class ConstantsService {
          * Constant for content type
          */
         const val HEADER_CONTENT_TYPE = "Content-Type"
-        /**
-         * Constant for application json
-         */
-        const val HEADER_APPLICATION = "application/json"
 
         //------------- Services code
         /**

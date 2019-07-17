@@ -9,6 +9,10 @@ import com.example.basearchitecture.data.network.interfaces.ConnectionApiService
 import com.example.basearchitecture.data.network.interfaces.INetwork
 import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
+import com.example.basearchitecture.data.network.enums.HttpMethod
+import com.example.basearchitecture.data.network.enums.MimeTypeEnum
+import com.example.basearchitecture.data.network.models.NetworkParams
+import com.example.basearchitecture.data.network.models.RequestData
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
 import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import com.google.gson.Gson
@@ -28,7 +32,8 @@ import javax.inject.Inject
  * @param retrofitClient retrofit client instance
  * @param readFile  i read file instance
  */
-class Network @Inject constructor(val retrofitClient: RetrofitClient, val readFile: IReadFile) : INetwork {
+class Network @Inject constructor(private val retrofitClient: RetrofitClient, private val readFile: IReadFile) :
+    INetwork {
 
     /**
      * Instance of consumer on next
@@ -58,6 +63,10 @@ class Network @Inject constructor(val retrofitClient: RetrofitClient, val readFi
      * Api service enum
      */
     private var mApiService: ApiServiceEnum? = null
+    /**
+     * Hash map to set generic post headers
+     */
+    private val mPostHeaders = HashMap<String, String>()
     /**
      * Logger instance
      */
@@ -150,10 +159,34 @@ class Network @Inject constructor(val retrofitClient: RetrofitClient, val readFi
             manageSuccessResponse(response)
         } else {
             when (networkParams.getMethodType()) {
-                HttpMethod.GET -> { mResponseListener!!.doGet(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!) }
-                HttpMethod.POST -> { mResponseListener!!.doPost(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!) }
+                HttpMethod.GET -> {
+                    mResponseListener!!.doGet(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!)
+                }
+                HttpMethod.POST -> {
+                    configPostRequest(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!)
+                }
             }
         }
+    }
+
+    /**
+     * Method to configure generic headers of post service
+     *
+     * @param url service url
+     * @param endPoint end point service
+     */
+    private fun configPostRequest(url: String, endPoint: String) {
+        when (mRequestData!!.getMimeType()) {
+            MimeTypeEnum.APPLICATION_JSON -> {
+                mPostHeaders[ConstantsService.HEADER_CONTENT_TYPE] = MimeTypeEnum.APPLICATION_JSON.mimeType
+            }
+            MimeTypeEnum.FORM_URL_ENCODED -> {
+                mPostHeaders[ConstantsService.HEADER_CONTENT_TYPE] = MimeTypeEnum.FORM_URL_ENCODED.mimeType
+            }
+            else -> { /* Empty else*/
+            }
+        }
+        mResponseListener!!.doPost(url, endPoint)
     }
 
     /**
@@ -188,7 +221,8 @@ class Network @Inject constructor(val retrofitClient: RetrofitClient, val readFi
      */
     @SuppressLint("CheckResult")
     override fun post(headers: Map<String, String>, url: String, body: String) {
-        mApiInterface!!.post(headers, url, body)
+        mPostHeaders.putAll(headers)
+        mApiInterface!!.post(mPostHeaders, url, body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(mOnNext!!, mOnError!!)

@@ -1,7 +1,7 @@
 package com.example.basearchitecture.ui.app.config
 
 import android.content.Context
-import com.example.basearchitecture.data.network.NetworkParams
+import com.example.basearchitecture.data.network.models.NetworkParams
 import com.example.basearchitecture.data.config.IReadFile
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import com.example.basearchitecture.ui.helpers.ReaderPropertiesHelper

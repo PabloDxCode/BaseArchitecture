@@ -1,7 +1,11 @@
-package com.example.basearchitecture.data.network
+package com.example.basearchitecture.data.network.models
+
+import com.example.basearchitecture.data.network.enums.MimeTypeEnum
 
 /**
  * RequestData
+ *
+ * Object to model request params of network
  */
 class RequestData {
 
@@ -17,6 +21,10 @@ class RequestData {
      * Error object response
      */
     private var errorObjectResponse: Class<*>? = null
+    /**
+     * Mime type application
+     */
+    private var mimeTypeEnum: MimeTypeEnum = MimeTypeEnum.APPLICATION_JSON
 
     /**
      * Init method
@@ -86,6 +94,25 @@ class RequestData {
     fun setErrorObjectResponse(errorResponse: Class<*>): RequestData {
         this.errorObjectResponse = errorResponse
         return this
+    }
+
+    /**
+     * Method to set mime type for post service
+     *
+     * @param mimeTypeEnum mime type for post service
+     */
+    fun setMimeType(mimeTypeEnum: MimeTypeEnum): RequestData {
+        this.mimeTypeEnum = mimeTypeEnum
+        return this
+    }
+
+    /**
+     * Method to get mime type for post service
+     *
+     * @return mime type for post service
+     */
+    fun getMimeType(): MimeTypeEnum {
+        return this.mimeTypeEnum
     }
 
 }

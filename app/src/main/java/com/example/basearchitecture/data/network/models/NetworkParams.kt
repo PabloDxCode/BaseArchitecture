@@ -1,4 +1,6 @@
-package com.example.basearchitecture.data.network
+package com.example.basearchitecture.data.network.models
+
+import com.example.basearchitecture.data.network.enums.HttpMethod
 
 /**
  * NetworkParams

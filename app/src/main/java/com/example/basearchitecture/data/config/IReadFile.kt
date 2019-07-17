@@ -1,6 +1,6 @@
 package com.example.basearchitecture.data.config
 
-import com.example.basearchitecture.data.network.NetworkParams
+import com.example.basearchitecture.data.network.models.NetworkParams
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 
 /**

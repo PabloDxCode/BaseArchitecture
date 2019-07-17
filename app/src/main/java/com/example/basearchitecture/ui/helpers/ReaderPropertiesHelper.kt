@@ -2,7 +2,7 @@ package com.example.basearchitecture.ui.helpers
 
 import android.content.Context
 import android.content.res.AssetManager
-import com.example.basearchitecture.data.network.NetworkParams
+import com.example.basearchitecture.data.network.models.NetworkParams
 import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import java.io.IOException
@@ -86,7 +86,7 @@ class ReaderPropertiesHelper(val context: Context) {
             } else {
                 val baseUrl = propertiesUrl.getProperty("$api.$fileUrlName")
 
-                val networkParams =  NetworkParams()
+                val networkParams = NetworkParams()
                 networkParams.setBaseUrl(baseUrl)
                 networkParams.setEndPoint(endPoint)
                 networkParams.setMethodType(methodType)

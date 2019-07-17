@@ -8,6 +8,8 @@ import com.example.basearchitecture.R
 
 /**
  * ProgressDialogFacotry
+ *
+ * Factory to create and show progress dialog
  */
 class ProgressDialogFacotry {
 
@@ -17,27 +19,25 @@ class ProgressDialogFacotry {
     private var mProgressDialog: ProgressDialog? = null
 
     /**
-     * Method to create progress dialog
+     * Method to create a custom progress dialog
      *
      * @param context context instance
-     * @return progress dialog
+     * @return progress dialog instance
      */
     fun createProgressDialog(context: Context): ProgressDialog {
         if (mProgressDialog == null) {
             mProgressDialog = ProgressDialog(context, R.style.ProgressDialog)
         }
         mProgressDialog!!.show()
-
         mProgressDialog!!.setContentView(R.layout.custom_progress_dialog)
-
-        mProgressDialog!!.getWindow()!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        mProgressDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         mProgressDialog!!.setCancelable(false)
         return mProgressDialog!!
     }
 
     /**
-     * Method to hide progress
+     * Method to hide progress only if it was created
      */
     fun hideProgress() {
         if (mProgressDialog != null) {
