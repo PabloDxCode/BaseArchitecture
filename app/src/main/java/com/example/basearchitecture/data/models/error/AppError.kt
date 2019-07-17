@@ -7,4 +7,4 @@ package com.example.basearchitecture.data.models.error
  * @param message error message
  * @param messageDebug message to show in debug console
  */
-data class AppError(val title: String?, val message: String?, val messageDebug: String? = null) : ICommonError
+data class AppError(val title: String?, val message: String?, val messageDebug: String? = null) : IAppError

@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.basearchitecture.di.modules.data.DataManagerModule
 import com.example.basearchitecture.di.modules.data.DatabaseModule
 import com.example.basearchitecture.di.modules.data.RepositoryModule
+import com.example.basearchitecture.di.modules.domain.DomainFactoriesModule
 import com.example.basearchitecture.di.modules.domain.UseCasesModule
 import com.example.basearchitecture.di.modules.ui.*
 import com.example.basearchitecture.ui.app.BaseArchitectureApp
@@ -24,6 +25,7 @@ import javax.inject.Singleton
         FragmentBuildersModule::class,
         PresenterModule::class,
         InteractorsModule::class,
+        DomainFactoriesModule::class,
         UseCasesModule::class,
         DataManagerModule::class,
         RepositoryModule::class,

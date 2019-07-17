@@ -6,10 +6,6 @@ package com.example.basearchitecture.data.config
 class ConfigApp {
 
     /**
-     * File config interface
-     */
-    private var mIReadFile: IReadFile? = null
-    /**
      * Connection config interface
      */
     private var mICheckConnection: ICheckConnection? = null
@@ -19,26 +15,6 @@ class ConfigApp {
          * Config instance
          */
         val ourInstance = ConfigApp()
-    }
-
-    /**
-     * Method to set read file config
-     *
-     * @param iReadFile read file config
-     * @return this
-     */
-    fun setReadFileConfig(iReadFile: IReadFile): ConfigApp {
-        this.mIReadFile = iReadFile
-        return this
-    }
-
-    /**
-     * Method to get read file config
-     *
-     * @return read file config interface
-     */
-    fun getReadFileConfig(): IReadFile {
-        return this.mIReadFile!!
     }
 
     /**

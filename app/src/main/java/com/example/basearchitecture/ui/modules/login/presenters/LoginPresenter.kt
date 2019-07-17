@@ -2,7 +2,7 @@ package com.example.basearchitecture.ui.modules.login.presenters
 
 import android.content.Context
 import com.example.basearchitecture.data.models.error.AppError
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.domain.businesslogiccase.enums.ViewTypeErrorEnum
 import com.example.basearchitecture.ui.modules.login.contracts.LoginContracts
 import com.example.basearchitecture.ui.modules.login.presenters.listeners.LoginPresenterListener
@@ -41,8 +41,8 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
     override fun doLogin(email: String, password: String) {
         if (mView != null) {
             mView!!.showProgress()
-            loginInteractor.init(email, password, this)
-            loginInteractor.doLogin()
+            loginInteractor.init(this)
+            loginInteractor.doLogin(email, password)
         }
     }
 
@@ -77,15 +77,20 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
     }
 
     /**
-     * Error for inactive user
-     *
-     * @param response common response
+     * Error for pending user
      */
-    override fun onErrorInactiveUser(response: ICommonError) {
+    override fun onErrorPendingUser() {
         if (mView != null) {
             mView!!.hideProgress()
-            val error = response as AppError
-            mView!!.onError(Utils.getErrorFromStrings(error.message!!, context))
+        }
+    }
+
+    /**
+     * Error for inactive user
+     */
+    override fun onErrorInactiveUser() {
+        if (mView != null) {
+            mView!!.hideProgress()
         }
     }
 
@@ -94,7 +99,20 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
      *
      * @param response common response
      */
-    override fun onErrorNonExistUser(response: ICommonError) {
+    override fun onErrorNonExistUser(response: IAppError) {
+        if (mView != null) {
+            mView!!.hideProgress()
+            val error = response as AppError
+            mView!!.onError(Utils.getErrorFromStrings(error.message!!, context))
+        }
+    }
+
+    /**
+     * Error for locked user
+     *
+     * @param response common response
+     */
+    override fun onErrorLockedUser(response: IAppError) {
         if (mView != null) {
             mView!!.hideProgress()
             val error = response as AppError
@@ -107,20 +125,7 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
      *
      * @param response common response
      */
-    override fun onRequestError(response: ICommonError) {
-        if (mView != null) {
-            mView!!.hideProgress()
-            val error = response as AppError
-            mView!!.onError(Utils.getErrorFromStrings(error.message!!, context))
-        }
-    }
-
-    /**
-     * Error for inactive session
-     *
-     * @param response common response
-     */
-    override fun onErrorInactiveSession(response: ICommonError) {
+    override fun onRequestError(response: IAppError) {
         if (mView != null) {
             mView!!.hideProgress()
             val error = response as AppError

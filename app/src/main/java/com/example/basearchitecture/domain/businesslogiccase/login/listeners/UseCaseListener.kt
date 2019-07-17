@@ -1,6 +1,6 @@
 package com.example.basearchitecture.domain.businesslogiccase.login.listeners
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * UseCaseListener
@@ -26,6 +26,6 @@ interface UseCaseListener {
      *
      * @param error generic error
      */
-    fun onErrorServer(error: ICommonError)
+    fun onErrorServer(error: IAppError)
 
 }

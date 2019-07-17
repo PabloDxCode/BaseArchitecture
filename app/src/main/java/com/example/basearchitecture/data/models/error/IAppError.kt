@@ -1,6 +1,6 @@
 package com.example.basearchitecture.data.models.error
 
 /**
- * ICommonError
+ * IAppError
  */
-interface ICommonError
+interface IAppError

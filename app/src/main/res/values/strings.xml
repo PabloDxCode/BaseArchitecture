@@ -50,8 +50,8 @@
     <string name="error_data">Error al hacer login.</string>
     <string name="error_session">Error al iniciar sesión.</string>
     <string name="error_wifi">Sin conexión a internet.</string>
-    <string name="error_pending_status">Ususario pendiente de activación</string>
-    <string name="error_nonexistent_status">El usuario introducido es incorrecto. Por favor intentelo de nuevo</string>
+    <string name="error_pending">Ususario pendiente de activación</string>
+    <string name="error_non_exist">El usuario introducido es incorrecto. Por favor intentelo de nuevo</string>
     <string name="error_time_out">Se ha excedido el tiempo de conexión, vuelve a intentarlo.</string>
 
     <!-- Extra strings -->

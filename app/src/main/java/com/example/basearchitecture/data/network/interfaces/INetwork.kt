@@ -23,4 +23,8 @@ interface INetwork{
      */
     fun execute()
 
+    fun get(headers: Map<String, String>, url: String)
+
+    fun post(headers: Map<String, String>, url: String, body: String)
+
 }

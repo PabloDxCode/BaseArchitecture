@@ -1,6 +1,6 @@
 package com.example.basearchitecture.domain.businesslogiccase.login
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * GenerateSessionIdUseCase
@@ -25,7 +25,7 @@ interface GenerateSessionIdUseCase {
      *
      * @return this
      */
-    fun onErrorResponse(errorResponse: (ICommonError) -> Unit): GenerateSessionIdUseCase
+    fun onErrorResponse(errorResponse: (IAppError) -> Unit): GenerateSessionIdUseCase
 
     /**
      * Execute method

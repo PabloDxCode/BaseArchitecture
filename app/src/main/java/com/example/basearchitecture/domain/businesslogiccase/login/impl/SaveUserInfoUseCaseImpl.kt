@@ -2,7 +2,7 @@ package com.example.basearchitecture.domain.businesslogiccase.login.impl
 
 import com.example.basearchitecture.data.manager.DataManager
 import com.example.basearchitecture.data.models.User
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.domain.businesslogiccase.login.SaveUserInfoUseCase
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ class SaveUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager):
     /**
      * Error response method
      */
-    private var mErrorResponse: ((ICommonError) -> Unit?)? = null
+    private var mErrorResponse: ((IAppError) -> Unit?)? = null
 
     /**
      * Success response
@@ -41,7 +41,7 @@ class SaveUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager):
      *
      * @return this
      */
-    override fun onErrorResponse(errorResponse: (ICommonError) -> Unit): SaveUserInfoUseCase {
+    override fun onErrorResponse(errorResponse: (IAppError) -> Unit): SaveUserInfoUseCase {
         this.mErrorResponse = errorResponse
         return this
     }

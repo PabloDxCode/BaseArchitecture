@@ -1,6 +1,6 @@
 package com.example.basearchitecture.data.repositories.listeners
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * ResponseListener
@@ -33,6 +33,22 @@ interface ResponseListener {
      *
      * @param error generic error response
      */
-    fun onErrorServer(error: ICommonError)
+    fun onErrorServer(error: IAppError)
+
+    /**
+     * Method to invoke get service
+     *
+     * @param url service url
+     * @param endPoint end point service
+     */
+    fun doGet(url: String, endPoint: String)
+
+    /**
+     * Method to invoke post service
+     *
+     * @param url service url
+     * @param endPoint end point service
+     */
+    fun doPost(url: String, endPoint: String)
 
 }

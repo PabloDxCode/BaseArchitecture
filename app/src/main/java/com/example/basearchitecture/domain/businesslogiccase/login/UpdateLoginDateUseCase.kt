@@ -1,6 +1,6 @@
 package com.example.basearchitecture.domain.businesslogiccase.login
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * UpdateLoginDateUseCase
@@ -25,7 +25,7 @@ interface UpdateLoginDateUseCase {
      *
      * @return this
      */
-    fun onErrorResponse(errorResponse: (ICommonError) -> Unit): UpdateLoginDateUseCase
+    fun onErrorResponse(errorResponse: (IAppError) -> Unit): UpdateLoginDateUseCase
 
     /**
      * Execute method

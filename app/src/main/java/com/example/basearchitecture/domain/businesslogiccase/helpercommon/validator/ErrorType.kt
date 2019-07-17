@@ -1,7 +1,7 @@
 package com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator
 
 /**
- * ErrorType
+ * ResponseErrorType
  */
 enum class ErrorType {
 

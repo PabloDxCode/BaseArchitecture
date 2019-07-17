@@ -1,7 +1,7 @@
 package com.example.basearchitecture.di.modules.data
 
 import com.example.basearchitecture.data.network.Network
-import com.example.basearchitecture.data.repositories.BaseRepository
+import com.example.basearchitecture.data.repositories.BaseNetworkRepository
 import com.example.basearchitecture.data.repositories.DataBaseRepository
 import com.example.basearchitecture.data.repositories.impl.AUCHRepositoryImpl
 import com.example.basearchitecture.data.repositories.impl.DataBaseRepositoryImpl
@@ -25,7 +25,7 @@ class RepositoryModule {
      */
     @Provides
     @Named("wibeRepository")
-    fun provideWibeRepository(network: Network): BaseRepository = WibeRepositoryImpl(network)
+    fun provideWibeRepository(network: Network): BaseNetworkRepository = WibeRepositoryImpl(network)
 
     /**
      * Method to provide AUCH repository
@@ -36,7 +36,7 @@ class RepositoryModule {
      */
     @Provides
     @Named("auchRepository")
-    fun provideAUCHRepository(network: Network): BaseRepository = AUCHRepositoryImpl(network)
+    fun provideAUCHRepository(network: Network): BaseNetworkRepository = AUCHRepositoryImpl(network)
 
     /**
      * Method to provide database repository

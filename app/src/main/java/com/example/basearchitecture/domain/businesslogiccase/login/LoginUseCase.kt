@@ -1,6 +1,6 @@
 package com.example.basearchitecture.domain.businesslogiccase.login
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * LoginUseCase
@@ -19,13 +19,22 @@ interface LoginUseCase {
     fun onSuccess(successLogin: () -> Unit): LoginUseCase
 
     /**
-     * Error response for inactive user
+     * Error response for pending status user
      *
-     * @param errorInactiveUser inactive user with common error param
+     * @param errorPendingStatusUser pending status user with common error param
      *
      * @return this
      */
-    fun onErrorInactiveUser(errorInactiveUser: (ICommonError) -> Unit): LoginUseCase
+    fun onErrorPendingStatusUser(errorPendingStatusUser: () -> Unit): LoginUseCase
+
+    /**
+     * Error response for inactive user
+     *
+     * @param errorInactiveUser unit method for inactive user error
+     *
+     * @return this
+     */
+    fun onErrorInactiveUser(errorInactiveUser: () -> Unit): LoginUseCase
 
     /**
      * Error response for non exist user
@@ -34,7 +43,16 @@ interface LoginUseCase {
      *
      * @return this
      */
-    fun onErrorNonExistUser(errorNonExistUser: (ICommonError) -> Unit): LoginUseCase
+    fun onErrorNonExistUser(errorNonExistUser: (IAppError) -> Unit): LoginUseCase
+
+    /**
+     * Error response for locked user
+     *
+     * @param errorLockedUser common error response
+     *
+     * @return this
+     */
+    fun onErrorLockedUser(errorLockedUser: (IAppError) -> Unit): LoginUseCase
 
     /**
      * Error response
@@ -43,7 +61,7 @@ interface LoginUseCase {
      *
      * @return this
      */
-    fun onErrorResponse(errorResponse: (ICommonError) -> Unit): LoginUseCase
+    fun onErrorResponse(errorResponse: (IAppError) -> Unit): LoginUseCase
 
     /**
      * Execute method

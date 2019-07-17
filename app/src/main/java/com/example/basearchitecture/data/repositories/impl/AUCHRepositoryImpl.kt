@@ -8,25 +8,39 @@ import javax.inject.Inject
 /**
  * AUCHRepositoryImpl
  */
-class AUCHRepositoryImpl @Inject constructor(val network: Network) : BaseRepositoryImpl() {
+class AUCHRepositoryImpl @Inject constructor(val network: Network) : BaseNetworkRepositoryImpl() {
 
     /**
      * Method to invoke repository service
      *
      * @param requestCode request code
      */
-    override fun invokeWibeService(requestCode: String) {
+    override fun invokeService(requestCode: String) {
         val requestData = RequestData()
-            .setHeaders(mHeaders!!)
             .setRequestCode(requestCode)
-            .setRequestBody(mRequestBody!!)
-            .setParams(mParams!!)
-            .setZoneType(mZoneType)
             .setSuccessObjectResponse(mSuccessObjectResponse!!)
             .setErrorObjectResponse(mErrorObjectResponse!!)
 
         network.init(requestData, this, ApiServiceEnum.AUCH)
         network.execute()
+    }
+
+    /**
+     * Method to invoke get service
+     *
+     * @param url service url
+     * @param endPoint end point service
+     */
+    override fun doGet(url: String, endPoint: String) {
+    }
+
+    /**
+     * Method to invoke post service
+     *
+     * @param url service url
+     * @param endPoint end point service
+     */
+    override fun doPost(url: String, endPoint: String) {
     }
 
 }

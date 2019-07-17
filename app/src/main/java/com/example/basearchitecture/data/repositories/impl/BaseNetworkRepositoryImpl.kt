@@ -1,14 +1,14 @@
 package com.example.basearchitecture.data.repositories.impl
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
-import com.example.basearchitecture.data.repositories.BaseRepository
+import com.example.basearchitecture.data.repositories.BaseNetworkRepository
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
 
 /**
- * BaseRepositoryImpl
+ * BaseNetworkRepositoryImpl
  */
-abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
+abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListener {
 
     /**
      * Map of headers
@@ -45,7 +45,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
     /**
      * Server error method response
      */
-    protected var mServerError: ((ICommonError) -> Unit?)? = null
+    protected var mServerError: ((IAppError) -> Unit?)? = null
 
     /**
      * Init method
@@ -65,7 +65,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setHeaders(headers: Map<String, String>): BaseRepository {
+    override fun setHeaders(headers: Map<String, String>): BaseNetworkRepository {
         this.mHeaders = headers
         return this
     }
@@ -77,7 +77,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setRequestBody(requestBody: String): BaseRepository {
+    override fun setRequestBody(requestBody: String): BaseNetworkRepository {
         this.mRequestBody = requestBody
         return this
     }
@@ -89,7 +89,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setParams(params: Map<String, String>): BaseRepository {
+    override fun setParams(params: Map<String, String>): BaseNetworkRepository {
         this.mParams = params
         return this
     }
@@ -101,7 +101,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setSuccessResponse(successResponse: Class<*>): BaseRepository {
+    override fun setSuccessResponse(successResponse: Class<*>): BaseNetworkRepository {
         this.mSuccessObjectResponse = successResponse
         return this
     }
@@ -113,7 +113,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setErrorResponse(errorResponse: Class<*>): BaseRepository {
+    override fun setErrorResponse(errorResponse: Class<*>): BaseNetworkRepository {
         this.mErrorObjectResponse = errorResponse
         return this
     }
@@ -125,24 +125,43 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @return this
      */
-    override fun setZoneType(zoneType: ZoneTypeEnum): BaseRepository {
+    override fun setZoneType(zoneType: ZoneTypeEnum): BaseNetworkRepository {
         this.mZoneType = zoneType
         return this
     }
 
     /**
-     * Method to set response listeners
+     * On success response
      *
      * @param response success method response
+     *
+     * @return this
+     */
+    override fun onSuccess(response: (Any) -> Unit): BaseNetworkRepository {
+        this.mResponse = response
+        return this
+    }
+
+    /**
+     * On error response
+     *
      * @param error error method response
+     *
+     * @return this
+     */
+    override fun onError(error: (Any) -> Unit): BaseNetworkRepository {
+        this.mError = error
+        return this
+    }
+
+    /**
+     * On server error response
+     *
      * @param serverError server error method response
      *
      * @return this
      */
-    override fun setResponseListeners(response: ((Any) -> Unit?)?, error: ((Any) -> Unit?)?,
-                                      serverError: ((ICommonError) -> Unit?)?): BaseRepository {
-        this.mResponse = response
-        this.mError = error
+    override fun onServerError(serverError: (IAppError) -> Unit): BaseNetworkRepository {
         this.mServerError = serverError
         return this
     }
@@ -185,7 +204,7 @@ abstract class BaseRepositoryImpl: BaseRepository, ResponseListener {
      *
      * @param error generic error response
      */
-    override fun onErrorServer(error: ICommonError) {
+    override fun onErrorServer(error: IAppError) {
         if(this.mServerError != null){
             this.mServerError!!.invoke(error)
         }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * ErrorResponse
  */
-class ErrorResponse : ICommonError {
+class ErrorResponse : IAppError {
 
     /**
      * Error form dto

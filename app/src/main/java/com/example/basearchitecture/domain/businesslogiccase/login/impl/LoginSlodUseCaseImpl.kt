@@ -2,7 +2,9 @@ package com.example.basearchitecture.domain.businesslogiccase.login.impl
 
 import com.example.basearchitecture.data.manager.DataManager
 import com.example.basearchitecture.data.models.error.AppError
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
+import com.example.basearchitecture.data.network.ConstantsService
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginSlodUseCase
 import com.example.basearchitecture.domain.businesslogiccase.login.helper.SessionErrorHelper
 import javax.inject.Inject
@@ -21,7 +23,7 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
     /**
      * Error response method
      */
-    private var mErrorResponse: ((ICommonError) -> Unit?)? = null
+    private var mErrorResponse: ((IAppError) -> Unit?)? = null
 
     /**
      * Success response
@@ -42,7 +44,7 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
      *
      * @return this
      */
-    override fun onErrorResponse(errorResponse: (ICommonError) -> Unit): LoginSlodUseCase {
+    override fun onErrorResponse(errorResponse: (IAppError) -> Unit): LoginSlodUseCase {
         this.mErrorResponse = errorResponse
         return this
     }
@@ -62,11 +64,12 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
         params["eai_URLDestino"] =
                 "https://qa.wibe.com.mx/mwib_mult_web_mwibprivatewebapp_01/api/loginStatus&idioma=CAS"
 
-        dataManager
+        dataManager.getWibeRepository()
+            .setParams(params)
             .onSuccess { manageResponse(it.toString()) }
-            .onError { mErrorResponse!!.invoke(AppError(null, "session")) }
+            .onError { mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString())) }
             .onServerError { mErrorResponse!!.invoke(it) }
-            .loginSlod(params)
+            .invokeService(ConstantsService.LOGIN_SLOD_SERVICE_CODE)
     }
 
     /**

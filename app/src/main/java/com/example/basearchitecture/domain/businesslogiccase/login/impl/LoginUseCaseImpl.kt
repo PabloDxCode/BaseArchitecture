@@ -4,9 +4,12 @@ import com.example.basearchitecture.data.manager.DataManager
 import com.example.basearchitecture.data.models.UserStatusEnum
 import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.ErrorResponse
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.data.models.response.UserStatusResponse
+import com.example.basearchitecture.data.network.ConstantsService
+import com.example.basearchitecture.data.utils.Utils
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ErrorType
 import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidFieldsHelper
 import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidationArgs
@@ -34,17 +37,25 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
      */
     private var mSuccessLogin: (() -> Unit?)? = null
     /**
-     * Error inactive user method
+     * Error pending status user method
      */
-    private var mErrorInactiveUser: ((ICommonError) -> Unit?)? = null
+    private var mErrorPendingStatusUser: (() -> Unit?)? = null
     /**
      * Error non-exist user method
      */
-    private var mErrorNonExistUser: ((ICommonError) -> Unit?)? = null
+    private var mErrorNonExistUser: ((IAppError) -> Unit?)? = null
+    /**
+     * Error inactive user method
+     */
+    private var mErrorInactiveUser: (() -> Unit?)? = null
+    /**
+     * Error locked user method
+     */
+    private var mErrorLockedUser: ((IAppError) -> Unit?)? = null
     /**
      * Error response method
      */
-    private var mErrorResponse: ((ICommonError) -> Unit?)? = null
+    private var mErrorResponse: ((IAppError) -> Unit?)? = null
 
     /**
      * Success response for login service
@@ -59,13 +70,25 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
     }
 
     /**
-     * Error response for inactive user
+     * Error response for pending status user
      *
-     * @param errorInactiveUser inactive user with common error param
+     * @param errorPendingStatusUser pending status user with common error param
      *
      * @return this
      */
-    override fun onErrorInactiveUser(errorInactiveUser: (ICommonError) -> Unit): LoginUseCase {
+    override fun onErrorPendingStatusUser(errorPendingStatusUser: () -> Unit): LoginUseCase {
+        this.mErrorPendingStatusUser = errorPendingStatusUser
+        return this
+    }
+
+    /**
+     * Error response for inactive user
+     *
+     * @param errorInactiveUser unit method for inactive user error
+     *
+     * @return this
+     */
+    override fun onErrorInactiveUser(errorInactiveUser: () -> Unit): LoginUseCase {
         this.mErrorInactiveUser = errorInactiveUser
         return this
     }
@@ -77,7 +100,7 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
      *
      * @return this
      */
-    override fun onErrorNonExistUser(errorNonExistUser: (ICommonError) -> Unit): LoginUseCase {
+    override fun onErrorNonExistUser(errorNonExistUser: (IAppError) -> Unit): LoginUseCase {
         this.mErrorNonExistUser = errorNonExistUser
         return this
     }
@@ -89,7 +112,19 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
      *
      * @return this
      */
-    override fun onErrorResponse(errorResponse: (ICommonError) -> Unit): LoginUseCase {
+    override fun onErrorLockedUser(errorLockedUser: (IAppError) -> Unit): LoginUseCase {
+        this.mErrorLockedUser = errorLockedUser
+        return this
+    }
+
+    /**
+     * Error response
+     *
+     * @param errorResponse common error response
+     *
+     * @return this
+     */
+    override fun onErrorResponse(errorResponse: (IAppError) -> Unit): LoginUseCase {
         this.mErrorResponse = errorResponse
         return this
     }
@@ -131,14 +166,18 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
     fun doLogin() {
         val requestBody = Gson().toJson(UserStatusRequest(mEmail!!))
 
-        dataManager
+        dataManager.getWibeRepository()
+            .setHeaders(Utils.getHeaders())
+            .setRequestBody(requestBody)
+            .setSuccessResponse(UserStatusResponse::class.java)
+            .setErrorResponse(ErrorResponse::class.java)
             .onSuccess { validateLoginResponse(it as UserStatusResponse) }
             .onError {
                 val errorResponse = it as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))
             }
             .onServerError { mErrorResponse!!.invoke(it) }
-            .login(requestBody)
+            .invokeService(ConstantsService.LOGIN_SERVICE_CODE)
     }
 
     /**
@@ -152,13 +191,19 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
                 mSuccessLogin!!.invoke()
             }
             UserStatusEnum.PENDIENTE_ACTIVACION -> {
-                mErrorInactiveUser!!.invoke(AppError(null, "pending_status"))
+                mErrorPendingStatusUser!!.invoke()
             }
             UserStatusEnum.INEXISTENTE -> {
-                mErrorNonExistUser!!.invoke(AppError(null, "nonexistent_status"))
+                mErrorNonExistUser!!.invoke(AppError(null, ResponseErrorType.NON_EXIST.toString()))
+            }
+            UserStatusEnum.INACTIVO ->{
+                mErrorInactiveUser!!.invoke()
+            }
+            UserStatusEnum.BLOQUEADO ->{
+                mErrorLockedUser!!.invoke(AppError(null, ResponseErrorType.EAI0008.toString()))
             }
             else -> {
-                mErrorResponse!!.invoke(AppError(null, "generic_response"))
+                mErrorResponse!!.invoke(AppError(null, ResponseErrorType.GENERIC_RESPONSE.toString()))
             }
         }
     }

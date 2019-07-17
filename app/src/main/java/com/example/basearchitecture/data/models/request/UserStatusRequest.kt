@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * UserStatusRequest
  *
- * @param user user param
+ * @param user user param to request service
  */
 data class UserStatusRequest(
     @SerializedName("usuario")

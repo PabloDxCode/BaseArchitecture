@@ -48,7 +48,6 @@ class BaseArchitectureApp : MultiDexApplication(), HasActivityInjector {
         AppInjector.init(this)
 
         ConfigApp.ourInstance
-            .setReadFileConfig(ReadFileConfig(this))
             .setCheckConnection(WifiConfig(this))
 
         Timber.plant(Timber.DebugTree())

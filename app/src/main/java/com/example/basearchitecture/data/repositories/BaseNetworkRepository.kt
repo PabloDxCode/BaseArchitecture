@@ -1,12 +1,12 @@
 package com.example.basearchitecture.data.repositories
 
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
 
 /**
- * BaseRepository
+ * BaseNetworkRepository
  */
-interface BaseRepository {
+interface BaseNetworkRepository {
 
     /**
      * Method to set map of headers
@@ -15,7 +15,7 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setHeaders(headers: Map<String, String>): BaseRepository
+    fun setHeaders(headers: Map<String, String>): BaseNetworkRepository
 
     /**
      * Method to set request body
@@ -24,7 +24,7 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setRequestBody(requestBody: String): BaseRepository
+    fun setRequestBody(requestBody: String): BaseNetworkRepository
 
     /**
      * Method to set map params
@@ -33,7 +33,7 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setParams(params: Map<String, String>): BaseRepository
+    fun setParams(params: Map<String, String>): BaseNetworkRepository
 
     /**
      * Method to set success object response
@@ -42,7 +42,7 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setSuccessResponse(successResponse: Class<*>): BaseRepository
+    fun setSuccessResponse(successResponse: Class<*>): BaseNetworkRepository
 
     /**
      * Method to set error object response
@@ -51,7 +51,7 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setErrorResponse(errorResponse: Class<*>): BaseRepository
+    fun setErrorResponse(errorResponse: Class<*>): BaseNetworkRepository
 
     /**
      * Method to set zone type
@@ -60,24 +60,40 @@ interface BaseRepository {
      *
      * @return this
      */
-    fun setZoneType(zoneType: ZoneTypeEnum): BaseRepository
+    fun setZoneType(zoneType: ZoneTypeEnum): BaseNetworkRepository
 
     /**
-     * Method to set response listeners
+     * On success response
      *
      * @param response success method response
-     * @param error error method response
+     *
+     * @return this
+     */
+    fun onSuccess(response: (Any) -> Unit): BaseNetworkRepository
+
+    /**
+     * On error response
+     *
+     * @param response error method response
+     *
+     * @return this
+     */
+    fun onError(error: (Any) -> Unit): BaseNetworkRepository
+
+    /**
+     * On server error response
+     *
      * @param serverError server error method response
      *
      * @return this
      */
-    fun setResponseListeners(response: ((Any) -> Unit?)?, error: ((Any) -> Unit?)?, serverError: ((ICommonError) -> Unit?)?): BaseRepository
+    fun onServerError(serverError: (IAppError) -> Unit): BaseNetworkRepository
 
     /**
      * Method to invoke repository service
      *
      * @param requestCode request code
      */
-    fun invokeWibeService(requestCode: String)
+    fun invokeService(requestCode: String)
 
 }

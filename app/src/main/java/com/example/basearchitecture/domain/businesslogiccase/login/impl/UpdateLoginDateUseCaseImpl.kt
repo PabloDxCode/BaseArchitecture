@@ -3,8 +3,11 @@ package com.example.basearchitecture.domain.businesslogiccase.login.impl
 import com.example.basearchitecture.data.manager.DataManager
 import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.ErrorResponse
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.models.request.UserStatusRequest
+import com.example.basearchitecture.data.network.ConstantsService
+import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
+import com.example.basearchitecture.data.utils.Utils
 import com.example.basearchitecture.domain.businesslogiccase.login.UpdateLoginDateUseCase
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -23,7 +26,7 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
     /**
      * Error response method
      */
-    private var mErrorResponse: ((ICommonError) -> Unit?)? = null
+    private var mErrorResponse: ((IAppError) -> Unit?)? = null
 
     /**
      * Success response for update login date service
@@ -44,7 +47,7 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
      *
      * @return this
      */
-    override fun onErrorResponse(errorResponse: (ICommonError) -> Unit): UpdateLoginDateUseCase {
+    override fun onErrorResponse(errorResponse: (IAppError) -> Unit): UpdateLoginDateUseCase {
         this.mErrorResponse = errorResponse
         return this
     }
@@ -57,14 +60,19 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
     override fun execute(email: String) {
         val requestBody = Gson().toJson(UserStatusRequest(email))
 
-        dataManager
+        dataManager.getWibeRepository()
+            .setHeaders(Utils.getHeaders())
+            .setRequestBody(requestBody)
+            .setZoneType(ZoneTypeEnum.PRIVATE)
+            .setSuccessResponse(ErrorResponse::class.java)
+            .setErrorResponse(ErrorResponse::class.java)
             .onSuccess { mSuccessUpdateLoginDate!!.invoke() }
             .onError {
                 val errorResponse = it as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(),null))
             }
             .onServerError { mErrorResponse!!.invoke(it) }
-            .updateLoginDate(requestBody)
+            .invokeService(ConstantsService.UPDATE_LOGIN_DATE_SERVICE_CODE)
     }
 
 }

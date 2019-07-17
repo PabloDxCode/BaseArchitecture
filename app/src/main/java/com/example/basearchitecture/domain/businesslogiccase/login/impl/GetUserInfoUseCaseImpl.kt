@@ -2,8 +2,11 @@ package com.example.basearchitecture.domain.businesslogiccase.login.impl
 
 import com.example.basearchitecture.data.manager.DataManager
 import com.example.basearchitecture.data.models.error.AppError
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 import com.example.basearchitecture.data.models.response.GetUserInformationResponse
+import com.example.basearchitecture.data.network.ConstantsService
+import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 import com.example.basearchitecture.domain.businesslogiccase.login.GetUserInfoUseCase
 import javax.inject.Inject
 
@@ -21,7 +24,7 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
     /**
      * Error response method
      */
-    private var mErrorResponse: ((ICommonError) -> Unit?)? = null
+    private var mErrorResponse: ((IAppError) -> Unit?)? = null
 
     /**
      * Success response
@@ -42,7 +45,7 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
      *
      * @return this
      */
-    override fun onErrorResponse(errorResponse: (ICommonError) -> Unit): GetUserInfoUseCase {
+    override fun onErrorResponse(errorResponse: (IAppError) -> Unit): GetUserInfoUseCase {
         this.mErrorResponse = errorResponse
         return this
     }
@@ -56,11 +59,14 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
         val params = HashMap<String, String>()
         params["idWibe"] = sessionId
 
-        dataManager
+        dataManager.getWibeRepository()
+            .setParams(params)
+            .setSuccessResponse(GetUserInformationResponse::class.java)
+            .setZoneType(ZoneTypeEnum.PRIVATE)
             .onSuccess { mSuccessGetUserInfo!!.invoke(it as GetUserInformationResponse) }
-            .onError { mErrorResponse!!.invoke(AppError(null, "generic_response")) }
+            .onError { mErrorResponse!!.invoke(AppError(null, ResponseErrorType.GENERIC_RESPONSE.toString())) }
             .onServerError { mErrorResponse!!.invoke(it) }
-            .getUserInfo(params)
+            .invokeService(ConstantsService.GET_USER_INFO_SERVICE_CODE)
     }
 
 }

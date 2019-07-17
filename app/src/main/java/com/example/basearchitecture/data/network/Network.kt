@@ -2,15 +2,14 @@ package com.example.basearchitecture.data.network
 
 import android.annotation.SuppressLint
 import com.example.basearchitecture.data.config.ConfigApp
+import com.example.basearchitecture.data.config.IReadFile
 import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.network.config.RetrofitClient
-import com.example.basearchitecture.data.network.helper.BuildUrlHelper
 import com.example.basearchitecture.data.network.interfaces.ConnectionApiService
 import com.example.basearchitecture.data.network.interfaces.INetwork
 import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
-import com.example.basearchitecture.data.utils.Utils
 import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,8 +24,11 @@ import javax.inject.Inject
  * Network
  *
  * Implement INetwork
+ *
+ * @param retrofitClient retrofit client instance
+ * @param readFile  i read file instance
  */
-class Network @Inject constructor(): INetwork{
+class Network @Inject constructor(val retrofitClient: RetrofitClient, val readFile: IReadFile) : INetwork {
 
     /**
      * Instance of consumer on next
@@ -51,11 +53,11 @@ class Network @Inject constructor(): INetwork{
     /**
      * Response listener object
      */
-    private var mResponseListener: ResponseListener?= null
+    private var mResponseListener: ResponseListener? = null
     /**
      * Api service enum
      */
-    private var mApiService: ApiServiceEnum?= null
+    private var mApiService: ApiServiceEnum? = null
     /**
      * Logger instance
      */
@@ -72,9 +74,8 @@ class Network @Inject constructor(): INetwork{
         this.mRequestData = requestData
         this.mResponseListener = responseListener
         this.mApiService = apiService
-        val retrofitClient = RetrofitClient(apiService)
-        val okHttpClient = retrofitClient.getOkHttpClient(retrofitClient.getLoggingInterceptor())
-        mRetrofit = retrofitClient.getRetrofitBuilder(okHttpClient)
+        retrofitClient.init(apiService)
+        mRetrofit = retrofitClient.getRetrofitClient()
 
         mOnNext = Consumer { manageSuccessResponse(it) }
         mOnError = Consumer { manageErrorResponse(it) }
@@ -90,14 +91,18 @@ class Network @Inject constructor(): INetwork{
             if (mRequestData!!.getSuccessObjectResponse() === String::class.java) {
                 mResponseListener!!.onSuccessResponse(response)
             } else {
-                mResponseListener!!.onSuccessResponseObj(Gson().fromJson(response, mRequestData!!.getSuccessObjectResponse()))
+                val responseObject = Gson().fromJson(response, mRequestData!!.getSuccessObjectResponse())
+                mResponseListener!!.onSuccessResponseObj(responseObject)
             }
-        }  catch (e: Exception) {
+        } catch (e: Exception) {
             try {
                 if (mRequestData!!.getErrorObjectResponse() === String::class.java) {
-                    mResponseListener!!.onErrorResponse(Gson().fromJson(response, mRequestData!!.getErrorObjectResponse()))
+                    mResponseListener!!.onErrorResponse(response)
+                } else {
+                    val responseObject = Gson().fromJson(response, mRequestData!!.getErrorObjectResponse())
+                    mResponseListener!!.onErrorResponse(responseObject)
                 }
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 mResponseListener!!.onErrorServer(AppError(null, "generic_response", e.message))
             }
         }
@@ -123,13 +128,12 @@ class Network @Inject constructor(): INetwork{
         try {
             if (ConfigApp.ourInstance.getCheckConnection().isConnected()) {
                 mApiInterface = mRetrofit!!.create(ConnectionApiService::class.java)
-                val networkParams = ConfigApp.ourInstance.getReadFileConfig()
-                    .getRequestParams(mRequestData!!.getRequestCode()!!, mApiService!!)
+                val networkParams = readFile.getRequestParams(mRequestData!!.getRequestCode()!!, mApiService!!)
                 configureRequest(networkParams!!)
             } else {
                 mResponseListener!!.onErrorServer(AppError(null, "wifi"))
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             mResponseListener!!.onErrorServer(AppError(null, "generic_error", e.message))
         }
     }
@@ -140,32 +144,26 @@ class Network @Inject constructor(): INetwork{
      * @param networkParams network params
      */
     private fun configureRequest(networkParams: NetworkParams) {
-        if ((mApiService!! == ApiServiceEnum.WIBE && Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
-            || (mApiService!! == ApiServiceEnum.AUCH && Environment.AUCH_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
-        ) {
+        if (isSimulationRequest()) {
             val response = networkParams.getResponse()!!
             mLogger.info(response)
             manageSuccessResponse(response)
         } else {
-            val url = BuildUrlHelper()
-                .setBaseUrl(networkParams.getBaseUrl()!!)
-                .setEndPoint(networkParams.getEndPoint()!!)
-                .setZoneType(mRequestData!!.getZoneType()!!, mApiService!!)
-                .setMapParams(mRequestData!!.getParams())
-                .build()
-
-            val headers = mRequestData!!.getHeaders()
             when (networkParams.getMethodType()) {
-                HttpMethod.GET -> {
-                    get(headers!!, url)
-                }
-                HttpMethod.POST -> {
-                    (headers!! as HashMap).putAll(Utils.getHeaders())
-                    post(mRequestData!!.getHeaders()!!, url, mRequestData!!.getRequestBody()!!)
-                }
+                HttpMethod.GET -> { mResponseListener!!.doGet(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!) }
+                HttpMethod.POST -> { mResponseListener!!.doPost(networkParams.getBaseUrl()!!, networkParams.getEndPoint()!!) }
             }
         }
     }
+
+    /**
+     * Method to validate if simulation is active
+     *
+     * @return boolean
+     */
+    private fun isSimulationRequest(): Boolean =
+        (mApiService!! == ApiServiceEnum.WIBE && Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
+                || (mApiService!! == ApiServiceEnum.AUCH && Environment.AUCH_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
 
     /**
      * Method to launch GET service
@@ -174,7 +172,7 @@ class Network @Inject constructor(): INetwork{
      * @param url service url
      */
     @SuppressLint("CheckResult")
-    private fun get(headers: Map<String, String>, url: String) {
+    override fun get(headers: Map<String, String>, url: String) {
         mApiInterface!!.get(headers, url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -189,7 +187,7 @@ class Network @Inject constructor(): INetwork{
      * @param body body of service
      */
     @SuppressLint("CheckResult")
-    private fun post(headers: Map<String, String>, url: String, body: String) {
+    override fun post(headers: Map<String, String>, url: String, body: String) {
         mApiInterface!!.post(headers, url, body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

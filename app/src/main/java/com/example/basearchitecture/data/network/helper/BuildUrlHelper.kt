@@ -60,8 +60,8 @@ class BuildUrlHelper {
      *
      * @return this
      */
-    fun setZoneType(zoneTypeEnum: ZoneTypeEnum, apiService: ApiServiceEnum): BuildUrlHelper {
-        if (Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.DEV && apiService == ApiServiceEnum.WIBE) {
+    fun setZoneType(zoneTypeEnum: ZoneTypeEnum): BuildUrlHelper {
+        if (Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.DEV) {
             var newEndPoint = ""
             if (zoneTypeEnum == ZoneTypeEnum.PUBLIC) {
                 newEndPoint = mEndPoint!!.replace(PUBLIC_QUOTE_END_POINT_URL, PUBLIC_END_POINT_URL)
@@ -78,7 +78,21 @@ class BuildUrlHelper {
      *
      * @return this
      */
-    fun setMapParams(mapParams: Map<String, String>?): BuildUrlHelper {
+    fun setMapParams(mapParams: Map<String, String>?, isConcatParams: Boolean = true): BuildUrlHelper {
+        if(isConcatParams){
+            concatParams(mapParams)
+        } else {
+            addParams(mapParams)
+        }
+        return this
+    }
+
+    /**
+     * Method to concat params to end point
+     *
+     * @param mapParams map params to concat in end point
+     */
+    private fun concatParams(mapParams: Map<String, String>?){
         if (mapParams != null && !mapParams.isEmpty()) {
             val newEndPoint = StringBuilder(mEndPoint!! + "?")
             for (item in mapParams.entries) {
@@ -87,7 +101,22 @@ class BuildUrlHelper {
             newEndPoint.deleteCharAt(newEndPoint.length - 1)
             mEndPoint = newEndPoint.toString()
         }
-        return this
+    }
+
+    /**
+     * Method to add params to end point
+     *
+     * @param mapParams map params to add in end point
+     */
+    private fun addParams(mapParams: Map<String, String>?){
+        if (mapParams != null && !mapParams.isEmpty()) {
+            val newEndPoint = StringBuilder(mEndPoint!!)
+            for (item in mapParams.entries) {
+                newEndPoint.append("/${item.value}/${item.key}")
+            }
+            newEndPoint.deleteCharAt(newEndPoint.length - 1)
+            mEndPoint = newEndPoint.toString()
+        }
     }
 
     /**

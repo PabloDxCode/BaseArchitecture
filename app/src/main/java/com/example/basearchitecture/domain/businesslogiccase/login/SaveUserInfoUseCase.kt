@@ -1,7 +1,7 @@
 package com.example.basearchitecture.domain.businesslogiccase.login
 
 import com.example.basearchitecture.data.models.User
-import com.example.basearchitecture.data.models.error.ICommonError
+import com.example.basearchitecture.data.models.error.IAppError
 
 /**
  * SaveUserInfoUseCase
@@ -24,7 +24,7 @@ interface SaveUserInfoUseCase {
      *
      * @return this
      */
-    fun onErrorResponse(errorResponse: (ICommonError) -> Unit): SaveUserInfoUseCase
+    fun onErrorResponse(errorResponse: (IAppError) -> Unit): SaveUserInfoUseCase
 
     /**
      * Execute method
