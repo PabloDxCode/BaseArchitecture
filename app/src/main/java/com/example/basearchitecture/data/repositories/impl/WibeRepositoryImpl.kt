@@ -20,7 +20,7 @@ class WibeRepositoryImpl @Inject constructor(val network: Network) : BaseNetwork
         val requestData = RequestData()
             .setRequestCode(requestCode)
             .setSuccessObjectResponse(mSuccessObjectResponse!!)
-            .setErrorObjectResponse(mErrorObjectResponse!!)
+            .setErrorObjectResponse(mErrorObjectResponse)
 
         network.init(requestData, this, ApiServiceEnum.WIBE)
         network.execute()

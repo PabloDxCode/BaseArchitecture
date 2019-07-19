@@ -91,7 +91,7 @@ class RequestData {
      *
      * @return this
      */
-    fun setErrorObjectResponse(errorResponse: Class<*>): RequestData {
+    fun setErrorObjectResponse(errorResponse: Class<*>?): RequestData {
         this.errorObjectResponse = errorResponse
         return this
     }
