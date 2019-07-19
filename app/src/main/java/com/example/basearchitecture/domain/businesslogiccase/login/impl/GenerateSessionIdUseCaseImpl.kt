@@ -67,11 +67,13 @@ class GenerateSessionIdUseCaseImpl @Inject constructor(val dataManager: DataMana
                 val sessionId = (it as GenerateIdSessionResponse).getSessionId()
                 mSuccessSessionId!!.invoke(sessionId!!)
             }
-            .onError {
-                val errorResponse = it as ErrorResponse
+            .onError { iAppError, _ ->
+                val errorResponse = iAppError as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))
             }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.GENERATE_SESSION_ID_SERVICE_CODE)
     }
 

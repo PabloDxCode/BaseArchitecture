@@ -14,7 +14,7 @@ import javax.inject.Inject
  *
  * @param dataManager data manager instance
  */
-class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager): LoginStatusUseCase {
+class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager) : LoginStatusUseCase {
 
     /**
      * Success session started method
@@ -56,8 +56,12 @@ class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager): 
         dataManager.getWibeRepository()
             .setSuccessResponse(LoginStatusResponse::class.java)
             .onSuccess { manageResponse(it as LoginStatusResponse) }
-            .onError { mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString())) }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onError { _, _ ->
+                mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString()))
+            }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.LOGIN_STATUS_SERVICE_CODE)
     }
 
@@ -67,7 +71,7 @@ class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager): 
      * @return response service
      */
     private fun manageResponse(loginStatusResponse: LoginStatusResponse) {
-        if(loginStatusResponse.isLogged()){
+        if (loginStatusResponse.isLogged()) {
             mIsSessionStarted!!.invoke()
         } else {
             mErrorResponse!!.invoke(AppError(null, "session"))

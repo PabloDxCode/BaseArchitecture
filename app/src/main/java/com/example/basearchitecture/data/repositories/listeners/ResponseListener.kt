@@ -25,15 +25,17 @@ interface ResponseListener {
      * Method that is executed when the request fails
      *
      * @param error response ERROR
+     * @param responseCode code of server response
      */
-    fun onErrorResponse(error: Any)
+    fun onErrorResponse(error: Any, responseCode: Int = 0)
 
     /**
      * Method that is executed when the request fails
      *
      * @param error generic error response
+     * @param responseCode code of server response
      */
-    fun onErrorServer(error: IAppError)
+    fun onErrorServer(error: IAppError, responseCode: Int = 0)
 
     /**
      * Method to invoke get service

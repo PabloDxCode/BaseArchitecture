@@ -170,11 +170,13 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
             .setSuccessResponse(UserStatusResponse::class.java)
             .setErrorResponse(ErrorResponse::class.java)
             .onSuccess { validateLoginResponse(it as UserStatusResponse) }
-            .onError {
-                val errorResponse = it as ErrorResponse
+            .onError { iAppError, _ ->
+                val errorResponse = iAppError as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))
             }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.LOGIN_SERVICE_CODE)
     }
 

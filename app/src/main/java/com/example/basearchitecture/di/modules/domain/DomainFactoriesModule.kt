@@ -26,8 +26,9 @@ class DomainFactoriesModule {
      * @return ILoginFactory
      */
     @Provides
-    fun provideLoginFactoryModule(loginUseCase: LoginUseCase, generateSessionIdUseCase: GenerateSessionIdUseCase, loginSlodUseCase: LoginSlodUseCase,
-                                  loginStatusUseCase: LoginStatusUseCase, getUserInfoUseCase: GetUserInfoUseCase, updateLoginDateUseCase: UpdateLoginDateUseCase,
+    fun provideLoginFactoryModule(loginUseCase: LoginUseCase, generateSessionIdUseCase: GenerateSessionIdUseCase,
+                                  loginSlodUseCase: LoginSlodUseCase, loginStatusUseCase: LoginStatusUseCase,
+                                  getUserInfoUseCase: GetUserInfoUseCase, updateLoginDateUseCase: UpdateLoginDateUseCase,
                                   saveUserInfoUseCase: SaveUserInfoUseCase
     ): ILoginFactory = LoginFactory(loginUseCase, generateSessionIdUseCase, loginSlodUseCase, loginStatusUseCase,
         getUserInfoUseCase, updateLoginDateUseCase, saveUserInfoUseCase)

@@ -41,11 +41,11 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
     /**
      * Error method response
      */
-    protected var mError: ((Any) -> Unit?)? = null
+    protected var mError: ((Any, Int) -> Unit?)? = null
     /**
      * Server error method response
      */
-    protected var mServerError: ((IAppError) -> Unit?)? = null
+    protected var mServerError: ((IAppError, Int) -> Unit?)? = null
 
     /**
      * Init method
@@ -55,7 +55,6 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
         this.mRequestBody = ""
         this.mParams = HashMap()
         this.mSuccessObjectResponse = String::class.java
-        this.mErrorObjectResponse = String::class.java
     }
 
     /**
@@ -149,7 +148,7 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      *
      * @return this
      */
-    override fun onError(error: (Any) -> Unit): BaseNetworkRepository {
+    override fun onError(error: (Any, Int) -> Unit): BaseNetworkRepository {
         this.mError = error
         return this
     }
@@ -161,7 +160,7 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      *
      * @return this
      */
-    override fun onServerError(serverError: (IAppError) -> Unit): BaseNetworkRepository {
+    override fun onServerError(serverError: (IAppError, Int) -> Unit): BaseNetworkRepository {
         this.mServerError = serverError
         return this
     }
@@ -192,10 +191,11 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      * Method that is executed when the request fails
      *
      * @param error response ERROR
+     * @param responseCode code of server response
      */
-    override fun onErrorResponse(error: Any) {
+    override fun onErrorResponse(error: Any, responseCode: Int) {
         if(this.mError != null){
-            this.mError!!.invoke(error)
+            this.mError!!.invoke(error, responseCode)
         }
     }
 
@@ -203,10 +203,11 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      * Method that is executed when the request fails
      *
      * @param error generic error response
+     * @param responseCode code of server response
      */
-    override fun onErrorServer(error: IAppError) {
+    override fun onErrorServer(error: IAppError, responseCode: Int) {
         if(this.mServerError != null){
-            this.mServerError!!.invoke(error)
+            this.mServerError!!.invoke(error, responseCode)
         }
     }
 

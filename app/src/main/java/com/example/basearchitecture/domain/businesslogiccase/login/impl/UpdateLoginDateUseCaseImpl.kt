@@ -65,11 +65,13 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
             .setSuccessResponse(ErrorResponse::class.java)
             .setErrorResponse(ErrorResponse::class.java)
             .onSuccess { mSuccessUpdateLoginDate!!.invoke() }
-            .onError {
-                val errorResponse = it as ErrorResponse
+            .onError { iAppError, _ ->
+                val errorResponse = iAppError as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(),null))
             }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.UPDATE_LOGIN_DATE_SERVICE_CODE)
     }
 

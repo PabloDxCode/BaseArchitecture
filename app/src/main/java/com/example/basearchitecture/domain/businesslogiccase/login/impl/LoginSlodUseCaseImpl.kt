@@ -66,8 +66,12 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
         dataManager.getWibeRepository()
             .setParams(params)
             .onSuccess { manageResponse(it.toString()) }
-            .onError { mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString())) }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onError { _, _ ->
+                mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString()))
+            }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.LOGIN_SLOD_SERVICE_CODE)
     }
 

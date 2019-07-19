@@ -19,10 +19,12 @@ import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 import retrofit2.Retrofit
 import java.net.SocketTimeoutException
 import java.util.logging.Logger
 import javax.inject.Inject
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * Network
@@ -38,7 +40,7 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
     /**
      * Instance of consumer on next
      */
-    private var mOnNext: Consumer<String>? = null
+    private var mOnNext: Consumer<Response<String>>? = null
     /**
      * Instance of consumer on ERROR
      */
@@ -86,16 +88,30 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
         retrofitClient.init(apiService)
         mRetrofit = retrofitClient.getRetrofitClient()
 
-        mOnNext = Consumer { manageSuccessResponse(it) }
+        mOnNext = Consumer { manageServerResponse(it) }
         mOnError = Consumer { manageErrorResponse(it) }
+    }
+
+    /**
+     * Method to manage server response
+     *
+     * @param response server response
+     */
+    fun manageServerResponse(response: Response<String>) {
+        if (response.body() == null) {
+            mResponseListener!!.onErrorServer(AppError(null, "generic_response", response.message()), response.code())
+        } else {
+            manageSuccessResponse(response.body()!!, response.code())
+        }
     }
 
     /**
      * Method to manage success response
      *
      * @param response success response
+     * @param responseCode code of server response
      */
-    fun manageSuccessResponse(response: String) {
+    private fun manageSuccessResponse(response: String, responseCode: Int) {
         try {
             if (mRequestData!!.getSuccessObjectResponse() === String::class.java) {
                 mResponseListener!!.onSuccessResponse(response)
@@ -104,16 +120,31 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
                 mResponseListener!!.onSuccessResponseObj(responseObject)
             }
         } catch (e: Exception) {
-            try {
+            manageErrorResponse(response, responseCode, e)
+        }
+    }
+
+    /**
+     * Method to manage error response or server error
+     *
+     * @param response success response
+     * @param responseCode code of server response
+     * @param e exception to parse success response
+     */
+    private fun manageErrorResponse(response: String, responseCode: Int, e: Exception) {
+        try {
+            if (mRequestData!!.getErrorObjectResponse() == null) {
+                mResponseListener!!.onErrorServer(AppError(null, "generic_response", e.message), responseCode)
+            } else {
                 if (mRequestData!!.getErrorObjectResponse() === String::class.java) {
-                    mResponseListener!!.onErrorResponse(response)
+                    mResponseListener!!.onErrorResponse(response, responseCode)
                 } else {
                     val responseObject = Gson().fromJson(response, mRequestData!!.getErrorObjectResponse())
-                    mResponseListener!!.onErrorResponse(responseObject)
+                    mResponseListener!!.onErrorResponse(responseObject, responseCode)
                 }
-            } catch (e: Exception) {
-                mResponseListener!!.onErrorServer(AppError(null, "generic_response", e.message))
             }
+        } catch (e: Exception) {
+            mResponseListener!!.onErrorServer(AppError(null, "generic_response", e.message), responseCode)
         }
     }
 
@@ -156,7 +187,7 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
         if (isSimulationRequest()) {
             val response = networkParams.getResponse()!!
             mLogger.info(response)
-            manageSuccessResponse(response)
+            manageSuccessResponse(response, HttpsURLConnection.HTTP_OK)
         } else {
             when (networkParams.getMethodType()) {
                 HttpMethod.GET -> {

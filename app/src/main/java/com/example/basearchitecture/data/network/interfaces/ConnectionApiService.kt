@@ -1,6 +1,7 @@
 package com.example.basearchitecture.data.network.interfaces
 
 import io.reactivex.Observable
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
@@ -21,7 +22,7 @@ interface ConnectionApiService {
      * @return observable
      */
     @GET
-    fun get(@HeaderMap headers: Map<String, String>, @Url url: String): Observable<String>
+    fun get(@HeaderMap headers: Map<String, String>, @Url url: String): Observable<Response<String>>
 
     /**
      * Method to launch POST service
@@ -33,6 +34,6 @@ interface ConnectionApiService {
      * @return observable
      */
     @POST
-    fun post(@HeaderMap headers: Map<String, String>, @Url url: String, @Body params: String): Observable<String>
+    fun post(@HeaderMap headers: Map<String, String>, @Url url: String, @Body params: String): Observable<Response<String>>
 
 }

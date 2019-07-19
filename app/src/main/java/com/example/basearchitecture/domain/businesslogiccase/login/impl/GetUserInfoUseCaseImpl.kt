@@ -64,8 +64,12 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
             .setSuccessResponse(GetUserInformationResponse::class.java)
             .setZoneType(ZoneTypeEnum.PRIVATE)
             .onSuccess { mSuccessGetUserInfo!!.invoke(it as GetUserInformationResponse) }
-            .onError { mErrorResponse!!.invoke(AppError(null, ResponseErrorType.GENERIC_RESPONSE.toString())) }
-            .onServerError { mErrorResponse!!.invoke(it) }
+            .onError { _, _ ->
+                mErrorResponse!!.invoke(AppError(null, ResponseErrorType.GENERIC_RESPONSE.toString()))
+            }
+            .onServerError { iAppError, _ ->
+                mErrorResponse!!.invoke(iAppError)
+            }
             .invokeService(ConstantsService.GET_USER_INFO_SERVICE_CODE)
     }
 

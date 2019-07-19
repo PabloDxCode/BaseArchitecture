@@ -74,20 +74,20 @@ interface BaseNetworkRepository {
     /**
      * On error response
      *
-     * @param response error method response
+     * @param error error method with custom error and response code
      *
      * @return this
      */
-    fun onError(error: (Any) -> Unit): BaseNetworkRepository
+    fun onError(error: (Any, Int) -> Unit): BaseNetworkRepository
 
     /**
      * On server error response
      *
-     * @param serverError server error method response
+     * @param serverError error method with common error and response code
      *
      * @return this
      */
-    fun onServerError(serverError: (IAppError) -> Unit): BaseNetworkRepository
+    fun onServerError(serverError: (IAppError, Int) -> Unit): BaseNetworkRepository
 
     /**
      * Method to invoke repository service
