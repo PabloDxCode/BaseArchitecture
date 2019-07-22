@@ -63,7 +63,7 @@ class GetUserInfoUseCaseImpl @Inject constructor(val dataManager: DataManager) :
             .setParams(params)
             .setSuccessResponse(GetUserInformationResponse::class.java)
             .setZoneType(ZoneTypeEnum.PRIVATE)
-            .onSuccess { mSuccessGetUserInfo!!.invoke(it as GetUserInformationResponse) }
+            .onSuccess { response, _ -> mSuccessGetUserInfo!!.invoke(response as GetUserInformationResponse) }
             .onError { _, _ ->
                 mErrorResponse!!.invoke(AppError(null, ResponseErrorType.GENERIC_RESPONSE.toString()))
             }

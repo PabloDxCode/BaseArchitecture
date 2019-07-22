@@ -3,28 +3,38 @@ package com.example.basearchitecture.domain.businesslogiccase.login.factory
 import com.example.basearchitecture.data.models.User
 import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.IAppError
+import com.example.basearchitecture.domain.businesslogiccase.common.FieldsValidationUseCase
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
+import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.FieldsMethodRules
+import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidationParams
 import com.example.basearchitecture.domain.businesslogiccase.login.*
 import javax.inject.Inject
 
 /**
  * LoginFactory
  *
+ * @param fieldsValidationUseCase fields validation use case instance
  * @param loginUseCase login use case instance
  * @param generateSessionIdUseCase generate session id use case instance
  * @param loginSlodUseCase login slod use case instance
  * @param loginStatusUseCase login status use case instance
  * @param getUserInfoUseCase get user info use case instance
  * @param updateLoginDateUseCase update login date use case instance
+ * @param saveEmailUseCase save email use case instance
+ * @param getEmailUseCase get email use case instance
  */
 class LoginFactory @Inject constructor(
+    val fieldsValidationUseCase: FieldsValidationUseCase,
     val loginUseCase: LoginUseCase,
     val generateSessionIdUseCase: GenerateSessionIdUseCase,
     val loginSlodUseCase: LoginSlodUseCase,
     val loginStatusUseCase: LoginStatusUseCase,
     val getUserInfoUseCase: GetUserInfoUseCase,
     val updateLoginDateUseCase: UpdateLoginDateUseCase,
-    val saveUserInfoUseCase: SaveUserInfoUseCase
-): ILoginFactory{
+    val saveUserInfoUseCase: SaveUserInfoUseCase,
+    val saveEmailUseCase: SaveEmailUseCase,
+    val getEmailUseCase: GetEmailUseCase
+) : ILoginFactory {
 
     /**
      * Email value
@@ -38,6 +48,14 @@ class LoginFactory @Inject constructor(
      * Session id value
      */
     private var mSessionId: String? = null
+    /**
+     * Success getting email method
+     */
+    private var mSuccessGetEmail: ((String) -> Unit?)? = null
+    /**
+     * Validation fields method
+     */
+    private var mIsValidFields: (((ArrayList<ResponseErrorType>)) -> Unit?)? = null
     /**
      * Success login method
      */
@@ -74,6 +92,30 @@ class LoginFactory @Inject constructor(
     override fun init(email: String, password: String): ILoginFactory {
         this.mEmail = email
         this.mPassword = password
+        return this
+    }
+
+    /**
+     * Method to manage fields validation
+     *
+     * @param isValidFields method to response fields validation
+     *
+     * @return this
+     */
+    override fun isValidFields(isValidFields: (ArrayList<ResponseErrorType>) -> Unit): ILoginFactory {
+        this.mIsValidFields = isValidFields
+        return this
+    }
+
+    /**
+     * Success response for email saved
+     *
+     * @param successGetEmail success getting email method
+     *
+     * @return this
+     */
+    override fun onSuccessGettingEmail(successGetEmail: (String) -> Unit): ILoginFactory {
+        this.mSuccessGetEmail = successGetEmail
         return this
     }
 
@@ -150,6 +192,25 @@ class LoginFactory @Inject constructor(
     }
 
     /**
+     * Method to validate fields
+     */
+    override fun validateFields() {
+        val validatorsList = arrayListOf<ValidationParams>()
+        validatorsList.add(FieldsMethodRules.commonEmailRule(mEmail!!))
+        validatorsList.add(FieldsMethodRules.commonPasswordRule(mPassword!!))
+
+        fieldsValidationUseCase
+            .isValidateField {
+                if (it.isEmpty()) {
+                    doLogin()
+                } else {
+                    mIsValidFields!!.invoke(it)
+                }
+            }
+            .execute(validatorsList)
+    }
+
+    /**
      * Method to do login
      */
     override fun doLogin() {
@@ -222,9 +283,27 @@ class LoginFactory @Inject constructor(
      */
     override fun updateLoginDate() {
         updateLoginDateUseCase
-            .onSuccess { mSuccessLogin!!.invoke() }
+            .onSuccess { saveEmail() }
             .onErrorResponse { mErrorResponse!!.invoke(it) }
             .execute(mEmail!!)
+    }
+
+    /**
+     * Method to save email in preferences
+     */
+    override fun saveEmail() {
+        saveEmailUseCase
+            .onSuccess { mSuccessLogin!!.invoke() }
+            .execute(mEmail!!)
+    }
+
+    /**
+     * Method to get email from preferences
+     */
+    override fun getEmail() {
+        getEmailUseCase
+            .onSuccess { mSuccessGetEmail!!.invoke(it)}
+            .execute()
     }
 
 }

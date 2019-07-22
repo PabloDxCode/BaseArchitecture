@@ -1,9 +1,9 @@
 package com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator
 
 /**
- * ResponseErrorType_old
+ * ValidationRuleEnum
  */
-enum class ErrorType {
+enum class ValidationRuleEnum {
 
     NOT_NULL,
     EMAIL,

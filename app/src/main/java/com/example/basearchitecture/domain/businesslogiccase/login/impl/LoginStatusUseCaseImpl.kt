@@ -55,7 +55,7 @@ class LoginStatusUseCaseImpl @Inject constructor(val dataManager: DataManager) :
     override fun execute() {
         dataManager.getWibeRepository()
             .setSuccessResponse(LoginStatusResponse::class.java)
-            .onSuccess { manageResponse(it as LoginStatusResponse) }
+            .onSuccess { response, _ -> manageResponse(response as LoginStatusResponse) }
             .onError { _, _ ->
                 mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString()))
             }

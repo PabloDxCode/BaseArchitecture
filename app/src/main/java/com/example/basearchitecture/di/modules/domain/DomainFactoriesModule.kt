@@ -1,5 +1,6 @@
 package com.example.basearchitecture.di.modules.domain
 
+import com.example.basearchitecture.domain.businesslogiccase.common.FieldsValidationUseCase
 import com.example.basearchitecture.domain.businesslogiccase.login.*
 import com.example.basearchitecture.domain.businesslogiccase.login.factory.ILoginFactory
 import com.example.basearchitecture.domain.businesslogiccase.login.factory.LoginFactory
@@ -22,15 +23,18 @@ class DomainFactoriesModule {
      * @param getUserInfoUseCase get user info use case instance
      * @param updateLoginDateUseCase update login date use case instance
      * @param saveUserInfoUseCase save user info use case instance
+     * @param saveEmailUseCase save email use case instance
+     * @param getEmailUseCase get email use case instance
      *
      * @return ILoginFactory
      */
     @Provides
-    fun provideLoginFactoryModule(loginUseCase: LoginUseCase, generateSessionIdUseCase: GenerateSessionIdUseCase,
-                                  loginSlodUseCase: LoginSlodUseCase, loginStatusUseCase: LoginStatusUseCase,
-                                  getUserInfoUseCase: GetUserInfoUseCase, updateLoginDateUseCase: UpdateLoginDateUseCase,
-                                  saveUserInfoUseCase: SaveUserInfoUseCase
-    ): ILoginFactory = LoginFactory(loginUseCase, generateSessionIdUseCase, loginSlodUseCase, loginStatusUseCase,
-        getUserInfoUseCase, updateLoginDateUseCase, saveUserInfoUseCase)
+    fun provideLoginFactoryModule(fieldsValidationUseCase: FieldsValidationUseCase, loginUseCase: LoginUseCase,
+                                  generateSessionIdUseCase: GenerateSessionIdUseCase, loginSlodUseCase: LoginSlodUseCase,
+                                  loginStatusUseCase: LoginStatusUseCase, getUserInfoUseCase: GetUserInfoUseCase,
+                                  updateLoginDateUseCase: UpdateLoginDateUseCase, saveUserInfoUseCase: SaveUserInfoUseCase,
+                                  saveEmailUseCase: SaveEmailUseCase, getEmailUseCase: GetEmailUseCase
+    ): ILoginFactory = LoginFactory(fieldsValidationUseCase, loginUseCase, generateSessionIdUseCase, loginSlodUseCase,
+        loginStatusUseCase, getUserInfoUseCase, updateLoginDateUseCase, saveUserInfoUseCase, saveEmailUseCase, getEmailUseCase)
 
 }

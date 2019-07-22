@@ -28,6 +28,11 @@ object LoginContracts {
         fun onSuccess()
 
         /**
+         * Success method to get email
+         */
+        fun onSuccessGettingEmail(email: String)
+
+        /**
          * Method to show email error
          *
          * @param error error message
@@ -70,6 +75,11 @@ object LoginContracts {
          */
         fun doLogin(email: String, password: String)
 
+        /**
+         * Method to get email saved
+         */
+        fun getEmail()
+
     }
 
     /**
@@ -91,6 +101,11 @@ object LoginContracts {
          * @param password password param
          */
         fun doLogin(email: String, password: String)
+
+        /**
+         * Method to get email from preferences
+         */
+        fun getEmailFromPreferences()
 
     }
 

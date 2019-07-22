@@ -114,13 +114,13 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
     private fun manageSuccessResponse(response: String, responseCode: Int) {
         try {
             if (mRequestData!!.getSuccessObjectResponse() === String::class.java) {
-                mResponseListener!!.onSuccessResponse(response)
+                mResponseListener!!.onSuccessResponse(response, responseCode)
             } else {
                 val responseObject = Gson().fromJson(response, mRequestData!!.getSuccessObjectResponse())
-                mResponseListener!!.onSuccessResponseObj(responseObject)
+                mResponseListener!!.onSuccessResponseObj(responseObject, responseCode)
             }
         } catch (e: Exception) {
-            manageErrorResponse(response, responseCode, e)
+            manageErrorObjectResponse(response, responseCode, e)
         }
     }
 
@@ -131,7 +131,7 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
      * @param responseCode code of server response
      * @param e exception to parse success response
      */
-    private fun manageErrorResponse(response: String, responseCode: Int, e: Exception) {
+    private fun manageErrorObjectResponse(response: String, responseCode: Int, e: Exception) {
         try {
             if (mRequestData!!.getErrorObjectResponse() == null) {
                 mResponseListener!!.onErrorServer(AppError(null, "generic_response", e.message), responseCode)

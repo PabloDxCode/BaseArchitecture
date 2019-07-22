@@ -9,9 +9,6 @@ import com.example.basearchitecture.data.models.request.UserStatusRequest
 import com.example.basearchitecture.data.models.response.UserStatusResponse
 import com.example.basearchitecture.data.network.ConstantsService
 import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
-import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ErrorType
-import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidFieldsHelper
-import com.example.basearchitecture.domain.businesslogiccase.helpercommon.validator.ValidationArgs
 import com.example.basearchitecture.domain.businesslogiccase.login.LoginUseCase
 import com.google.gson.Gson
 import javax.inject.Inject
@@ -137,26 +134,7 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
     override fun execute(email: String, password: String) {
         this.mEmail = email
         this.mPassword = password
-        if (validateFields(email, password)) {
-            doLogin()
-        } else {
-            mErrorResponse!!.invoke(AppError(null, "form", null))
-        }
-    }
-
-    /**
-     * Method to validate fields
-     *
-     * @param email email param
-     * @param password password param
-     *
-     * @return boolean
-     */
-    fun validateFields(email: String, password: String): Boolean {
-        val validateFieldsUtils = ValidFieldsHelper()
-        val isValidEmail = validateFieldsUtils.validateFields(ValidationArgs(email), ErrorType.EMAIL)
-        val isValidPassword = validateFieldsUtils.validateFields(ValidationArgs(password), ErrorType.NOT_NULL)
-        return isValidEmail && isValidPassword
+        doLogin()
     }
 
     /**
@@ -169,7 +147,7 @@ class LoginUseCaseImpl @Inject constructor(val dataManager: DataManager) : Login
             .setRequestBody(requestBody)
             .setSuccessResponse(UserStatusResponse::class.java)
             .setErrorResponse(ErrorResponse::class.java)
-            .onSuccess { validateLoginResponse(it as UserStatusResponse) }
+            .onSuccess { response, _ -> validateLoginResponse(response as UserStatusResponse) }
             .onError { iAppError, _ ->
                 val errorResponse = iAppError as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(), null))

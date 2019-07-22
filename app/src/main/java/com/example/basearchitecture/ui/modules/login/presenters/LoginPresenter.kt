@@ -3,7 +3,7 @@ package com.example.basearchitecture.ui.modules.login.presenters
 import android.content.Context
 import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.models.error.IAppError
-import com.example.basearchitecture.domain.businesslogiccase.enums.ViewTypeErrorEnum
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 import com.example.basearchitecture.ui.modules.login.contracts.LoginContracts
 import com.example.basearchitecture.ui.modules.login.presenters.listeners.LoginPresenterListener
 import com.example.basearchitecture.ui.utils.Utils
@@ -47,6 +47,16 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
     }
 
     /**
+     * Method to get email saved
+     */
+    override fun getEmail() {
+        if (mView != null) {
+            loginInteractor.init(this)
+            loginInteractor.getEmailFromPreferences()
+        }
+    }
+
+    /**
      * Success method
      */
     override fun onSuccess() {
@@ -57,22 +67,35 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginContracts.Log
     }
 
     /**
+     * Success method to get email
+     *
+     * @param email email saved
+     */
+    override fun onSuccessGettingEmail(email: String) {
+        if (mView != null) {
+            mView!!.onSuccessGettingEmail(email)
+        }
+    }
+
+    /**
      * Method to return view error
      *
-     * @param viewTypeError view error
+     * @param responseErrorType response error type list
      */
-    override fun onViewError(viewTypeError: ViewTypeErrorEnum) {
-        when(viewTypeError){
-            ViewTypeErrorEnum.ALL_VIEWS_ERROR->{
-                mView!!.onEmailError("")
-                mView!!.onPasswordError("")
+    override fun onViewError(responseErrorType: ArrayList<ResponseErrorType>) {
+        if (mView != null) {
+            mView!!.hideProgress()
+            for (item in responseErrorType) {
+                val message = Utils.getErrorFromStrings(item.toString(), context)
+                manageFieldResponse(message, item)
             }
-            ViewTypeErrorEnum.EMAIL_ERROR->{
-                mView!!.onEmailError("")
-            }
-            ViewTypeErrorEnum.PASSWORD_ERROR->{
-                mView!!.onPasswordError("")
-            }
+        }
+    }
+
+    private fun manageFieldResponse(message: String, responseErrorType: ResponseErrorType){
+        when(responseErrorType){
+            ResponseErrorType.EMAIL->{ mView!!.onEmailError(message) }
+            ResponseErrorType.PASSWORD->{ mView!!.onPasswordError(message) }
         }
     }
 

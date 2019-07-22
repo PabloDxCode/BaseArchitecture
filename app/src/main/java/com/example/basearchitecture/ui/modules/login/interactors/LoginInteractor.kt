@@ -34,13 +34,23 @@ class LoginInteractor @Inject constructor(val loginFactory: ILoginFactory) : Log
      */
     override fun doLogin(email: String, password: String) {
         loginFactory.init(email, password)
+            .isValidFields { mLoginPresenterListener!!.onViewError(it) }
             .onSuccess { mLoginPresenterListener!!.onSuccess() }
             .onErrorPendingStatusUser { mLoginPresenterListener!!.onErrorPendingUser() }
             .onErrorInactiveUser { mLoginPresenterListener!!.onErrorInactiveUser() }
             .onErrorNonExistUser { mLoginPresenterListener!!.onErrorNonExistUser(it) }
             .onErrorLockedUser { mLoginPresenterListener!!.onErrorLockedUser(it) }
             .onErrorResponse { mLoginPresenterListener!!.onRequestError(it) }
-            .doLogin()
+            .validateFields()
+    }
+
+    /**
+     * Method to get email from preferences
+     */
+    override fun getEmailFromPreferences() {
+        loginFactory
+            .onSuccessGettingEmail { mLoginPresenterListener!!.onSuccessGettingEmail(it) }
+            .getEmail()
     }
 
 }

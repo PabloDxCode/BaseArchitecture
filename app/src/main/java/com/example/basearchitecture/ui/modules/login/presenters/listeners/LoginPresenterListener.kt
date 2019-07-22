@@ -1,7 +1,7 @@
 package com.example.basearchitecture.ui.modules.login.presenters.listeners
 
 import com.example.basearchitecture.data.models.error.IAppError
-import com.example.basearchitecture.domain.businesslogiccase.enums.ViewTypeErrorEnum
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 
 /**
  * LoginPresenterListener
@@ -14,11 +14,18 @@ interface LoginPresenterListener {
     fun onSuccess()
 
     /**
+     * Success method to get email
+     *
+     * @param email email saved
+     */
+    fun onSuccessGettingEmail(email: String)
+
+    /**
      * Method to return view error
      *
-     * @param viewTypeError view error
+     * @param responseErrorType response error type list
      */
-    fun onViewError(viewTypeError: ViewTypeErrorEnum)
+    fun onViewError(responseErrorType: ArrayList<ResponseErrorType>)
 
     /**
      * Error for pending user

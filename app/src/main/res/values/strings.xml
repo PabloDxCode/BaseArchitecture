@@ -46,7 +46,7 @@
     <string name="error_generic_response">Operativa temporalmente no disponible</string>
     <string name="error_form">Datos incorrectos</string>
     <string name="error_email">Error en correo electronico.</string>
-    <string name="error_psw">Error en contraseña.</string>
+    <string name="error_password">Error en contraseña.</string>
     <string name="error_data">Error al hacer login.</string>
     <string name="error_session">Error al iniciar sesión.</string>
     <string name="error_wifi">Sin conexión a internet.</string>

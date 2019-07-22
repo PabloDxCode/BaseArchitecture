@@ -35,6 +35,7 @@ class LoginController : BaseController(), LoginContracts.LoginView {
             mPresenter.doLogin(etEmail.text.toString(), etPassword.text.toString())
         }
         mPresenter.init(this)
+        mPresenter.getEmail()
     }
 
     /**
@@ -57,6 +58,10 @@ class LoginController : BaseController(), LoginContracts.LoginView {
     override fun onSuccess() {
         NavigationUtils.Builder(this, MainController::class.java).start()
         finish()
+    }
+
+    override fun onSuccessGettingEmail(email: String) {
+        etEmail.setText(email)
     }
 
     /**

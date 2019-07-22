@@ -1,6 +1,8 @@
 package com.example.basearchitecture.di.modules.domain
 
 import com.example.basearchitecture.data.manager.DataManager
+import com.example.basearchitecture.domain.businesslogiccase.common.FieldsValidationUseCase
+import com.example.basearchitecture.domain.businesslogiccase.common.impl.FieldsValidationUseCaseImpl
 import com.example.basearchitecture.domain.businesslogiccase.login.*
 import com.example.basearchitecture.domain.businesslogiccase.login.impl.*
 import dagger.Module
@@ -11,6 +13,14 @@ import dagger.Provides
  */
 @Module
 class UseCasesModule {
+
+    /**
+     * Method to provide fields validation use case
+     *
+     * @return FieldsValidationUseCase
+     */
+    @Provides
+    fun provideFieldsValidationUseCaseImpl(): FieldsValidationUseCase = FieldsValidationUseCaseImpl()
 
     /**
      * Method to provide login use case
@@ -86,5 +96,25 @@ class UseCasesModule {
     @Provides
     fun provideSaveUserInfoUseCaseImpl(dataManager: DataManager): SaveUserInfoUseCase =
         SaveUserInfoUseCaseImpl(dataManager)
+
+    /**
+     * Method to provide save email use case
+     *
+     * @param dataManager data manager instance
+     *
+     * @return SaveEmailUseCase
+     */
+    @Provides
+    fun provideSaveEmailUseCase(dataManager: DataManager): SaveEmailUseCase = SaveEmailUseCaseImpl(dataManager)
+
+    /**
+     * Method to provide get email use case
+     *
+     * @param dataManager data manager instance
+     *
+     * @return GetEmailUseCase
+     */
+    @Provides
+    fun provideGetEmailUseCase(dataManager: DataManager): GetEmailUseCase = GetEmailUseCaseImpl(dataManager)
 
 }

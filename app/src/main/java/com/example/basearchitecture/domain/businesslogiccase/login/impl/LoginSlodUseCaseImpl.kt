@@ -65,7 +65,7 @@ class LoginSlodUseCaseImpl @Inject constructor(val dataManager: DataManager) : L
 
         dataManager.getWibeRepository()
             .setParams(params)
-            .onSuccess { manageResponse(it.toString()) }
+            .onSuccess { response, _ -> manageResponse(response.toString()) }
             .onError { _, _ ->
                 mErrorResponse!!.invoke(AppError(null, ResponseErrorType.SESSION.toString()))
             }

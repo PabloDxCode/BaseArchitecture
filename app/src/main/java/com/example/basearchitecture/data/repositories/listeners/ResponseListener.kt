@@ -11,15 +11,17 @@ interface ResponseListener {
      * Method that is executed when the answer is correct
      *
      * @param response Response object type
+     * @param responseCode code of server response
      */
-    fun onSuccessResponse(response: String)
+    fun onSuccessResponse(response: String, responseCode: Int = 0)
 
     /**
      * Method that is executed when the answer is correct
      *
      * @param response generic object response
+     * @param responseCode code of server response
      */
-    fun onSuccessResponseObj(response: Any)
+    fun onSuccessResponseObj(response: Any, responseCode: Int = 0)
 
     /**
      * Method that is executed when the request fails

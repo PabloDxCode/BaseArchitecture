@@ -2,6 +2,7 @@ package com.example.basearchitecture.domain.businesslogiccase.login.factory
 
 import com.example.basearchitecture.data.models.User
 import com.example.basearchitecture.data.models.error.IAppError
+import com.example.basearchitecture.domain.businesslogiccase.enums.ResponseErrorType
 
 /**
  * ILoginFactory
@@ -17,6 +18,24 @@ interface ILoginFactory {
      * @return this
      */
     fun init(email: String, password: String): ILoginFactory
+
+    /**
+     * Method to manage fields validation
+     *
+     * @param isValidFields method to response fields validation
+     *
+     * @return this
+     */
+    fun isValidFields(isValidFields: (ArrayList<ResponseErrorType>) -> Unit): ILoginFactory
+
+    /**
+     * Success response for email saved
+     *
+     * @param successGetEmail success getting email method
+     *
+     * @return this
+     */
+    fun onSuccessGettingEmail(successGetEmail: (String) -> Unit): ILoginFactory
 
     /**
      * Success response for login service
@@ -73,6 +92,11 @@ interface ILoginFactory {
     fun onErrorResponse(errorResponse: (IAppError) -> Unit): ILoginFactory
 
     /**
+     * Method to validate fields
+     */
+    fun validateFields()
+
+    /**
      * Method to do login
      */
     fun doLogin()
@@ -110,5 +134,15 @@ interface ILoginFactory {
      * Method to update login date
      */
     fun updateLoginDate()
+
+    /**
+     * Method to save email in preferences
+     */
+    fun saveEmail()
+
+    /**
+     * Method to get email from preferences
+     */
+    fun getEmail()
 
 }

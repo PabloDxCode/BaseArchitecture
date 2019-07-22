@@ -44,7 +44,7 @@ enum class ResponseErrorType {
     EAI00031,
     EAI00032,
     EAI00033,
-    USER,
+    EMAIL,
     PASSWORD;
 
     companion object {

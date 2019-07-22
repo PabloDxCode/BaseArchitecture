@@ -64,7 +64,7 @@ class UpdateLoginDateUseCaseImpl @Inject constructor(val dataManager: DataManage
             .setZoneType(ZoneTypeEnum.PRIVATE)
             .setSuccessResponse(ErrorResponse::class.java)
             .setErrorResponse(ErrorResponse::class.java)
-            .onSuccess { mSuccessUpdateLoginDate!!.invoke() }
+            .onSuccess { _, _ -> mSuccessUpdateLoginDate!!.invoke() }
             .onError { iAppError, _ ->
                 val errorResponse = iAppError as ErrorResponse
                 mErrorResponse!!.invoke(AppError(null, errorResponse.getErrorFormDto()!!.getFirstMessageOfList(),null))

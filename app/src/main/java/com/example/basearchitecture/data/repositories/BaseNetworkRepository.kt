@@ -65,11 +65,11 @@ interface BaseNetworkRepository {
     /**
      * On success response
      *
-     * @param response success method response
+     * @param response success method response and response code
      *
      * @return this
      */
-    fun onSuccess(response: (Any) -> Unit): BaseNetworkRepository
+    fun onSuccess(response: (Any, Int) -> Unit): BaseNetworkRepository
 
     /**
      * On error response

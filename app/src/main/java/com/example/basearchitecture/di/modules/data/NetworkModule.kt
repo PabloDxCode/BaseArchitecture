@@ -1,13 +1,11 @@
 package com.example.basearchitecture.di.modules.data
 
-import android.content.Context
 import com.example.basearchitecture.BuildConfig
 import com.example.basearchitecture.data.config.IReadFile
 import com.example.basearchitecture.data.network.Network
 import com.example.basearchitecture.data.network.config.RetrofitClient
 import com.example.basearchitecture.data.network.config.RetrofitClientImpl
 import com.example.basearchitecture.data.network.interfaces.INetwork
-import com.example.basearchitecture.ui.app.config.ReadFileConfig
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -74,16 +72,6 @@ class NetworkModule {
     @Provides
     fun provideRetrofitClient(okHttpBuilder: OkHttpClient.Builder): RetrofitClient =
         RetrofitClientImpl(okHttpBuilder)
-
-    /**
-     * Method to provide read file config
-     *
-     * @param context context instance
-     *
-     * @return i read file
-     */
-    @Provides
-    fun provideIReadFile(context: Context): IReadFile = ReadFileConfig(context)
 
     /**
      * Method to provide network

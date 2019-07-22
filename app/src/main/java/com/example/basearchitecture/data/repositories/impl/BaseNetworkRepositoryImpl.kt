@@ -37,7 +37,7 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
     /**
      * Success method response
      */
-    protected var mResponse: ((Any) -> Unit?)? = null
+    protected var mResponse: ((Any, Int) -> Unit?)? = null
     /**
      * Error method response
      */
@@ -136,7 +136,7 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      *
      * @return this
      */
-    override fun onSuccess(response: (Any) -> Unit): BaseNetworkRepository {
+    override fun onSuccess(response: (Any, Int) -> Unit): BaseNetworkRepository {
         this.mResponse = response
         return this
     }
@@ -169,10 +169,11 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      * Method that is executed when the answer is correct
      *
      * @param response Response object type
+     * @param responseCode code of server response
      */
-    override fun onSuccessResponse(response: String) {
+    override fun onSuccessResponse(response: String, responseCode: Int) {
         if(this.mResponse != null){
-            this.mResponse!!.invoke(response)
+            this.mResponse!!.invoke(response, responseCode)
         }
     }
 
@@ -180,10 +181,11 @@ abstract class BaseNetworkRepositoryImpl: BaseNetworkRepository, ResponseListene
      * Method that is executed when the answer is correct
      *
      * @param response generic object response
+     * @param responseCode code of server response
      */
-    override fun onSuccessResponseObj(response: Any) {
+    override fun onSuccessResponseObj(response: Any, responseCode: Int) {
         if(this.mResponse != null){
-            this.mResponse!!.invoke(response)
+            this.mResponse!!.invoke(response, responseCode)
         }
     }
 

@@ -63,8 +63,8 @@ class GenerateSessionIdUseCaseImpl @Inject constructor(val dataManager: DataMana
             .setRequestBody(requestBody)
             .setSuccessResponse(GenerateIdSessionResponse::class.java)
             .setErrorResponse(ErrorResponse::class.java)
-            .onSuccess {
-                val sessionId = (it as GenerateIdSessionResponse).getSessionId()
+            .onSuccess { response, _ ->
+                val sessionId = (response as GenerateIdSessionResponse).getSessionId()
                 mSuccessSessionId!!.invoke(sessionId!!)
             }
             .onError { iAppError, _ ->

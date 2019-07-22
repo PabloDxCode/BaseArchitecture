@@ -4,21 +4,21 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
- * ValidFieldsHelper
+ * ValidationFieldsHelper
  */
-class ValidFieldsHelper {
+class ValidationFieldsHelper {
 
     /**
      * Method to validate fields
      *
      * @param args arguments to validate
-     * @param errorTypes error types
+     * @param validationRules error types
      *
      * @return state of validation
      */
-    fun validateFields(args: ValidationArgs, vararg errorTypes: ErrorType): Boolean {
+    fun validateFields(args: ValidationArgs, validationRules: ArrayList<ValidationRuleEnum>): Boolean {
         var isValidField = true
-        for (item in errorTypes) {
+        for (item in validationRules) {
             if (!validateErrorType(args, item)) {
                 isValidField = false
                 break
@@ -35,24 +35,24 @@ class ValidFieldsHelper {
      *
      * @return boolean
      */
-    private fun validateErrorType(args: ValidationArgs, errorType: ErrorType): Boolean {
-        when (errorType) {
-            ErrorType.NOT_NULL -> {
+    private fun validateErrorType(args: ValidationArgs, validationRule: ValidationRuleEnum): Boolean {
+        when (validationRule) {
+            ValidationRuleEnum.NOT_NULL -> {
                 return ValidationMethods.isValidNullOrEmpty(args.param.toString())
             }
-            ErrorType.EMAIL -> {
+            ValidationRuleEnum.EMAIL -> {
                 return ValidationMethods.isValidateEmailAddress(args.param.toString())
             }
-            ErrorType.PASSWORD -> {
+            ValidationRuleEnum.PASSWORD -> {
                 return ValidationMethods.isValidPassword(args.param.toString())
             }
-            ErrorType.MAX_LENGTH -> {
+            ValidationRuleEnum.MAX_LENGTH -> {
                 return ValidationMethods.isValidMinLength(args.param.toString(), args.minLength)
             }
-            ErrorType.MIN_LENGTH -> {
+            ValidationRuleEnum.MIN_LENGTH -> {
                 return ValidationMethods.isValidMaxLength(args.param.toString(), args.maxLength)
             }
-            ErrorType.COMPARE -> {
+            ValidationRuleEnum.COMPARE -> {
                 return ValidationMethods.compareStrings(args.param.toString(), args.otherParam.toString())
             }
         }
