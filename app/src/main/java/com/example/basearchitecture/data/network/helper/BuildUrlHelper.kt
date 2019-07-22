@@ -1,9 +1,8 @@
 package com.example.basearchitecture.data.network.helper
 
+import com.example.basearchitecture.data.config.ConfigApp
 import com.example.basearchitecture.data.network.enums.ZoneTypeEnum
-import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
-import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import java.lang.StringBuilder
 
 /**
@@ -61,12 +60,10 @@ class BuildUrlHelper {
      * @return this
      */
     fun setZoneType(zoneTypeEnum: ZoneTypeEnum): BuildUrlHelper {
-        if (Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.DEV) {
-            var newEndPoint = ""
+        if (ConfigApp.ourInstance.getEnvironmentSelected().isDevelop(ApiServiceEnum.WIBE)) {
             if (zoneTypeEnum == ZoneTypeEnum.PUBLIC) {
-                newEndPoint = mEndPoint!!.replace(PUBLIC_QUOTE_END_POINT_URL, PUBLIC_END_POINT_URL)
+                mEndPoint = mEndPoint!!.replace(PUBLIC_QUOTE_END_POINT_URL, PUBLIC_END_POINT_URL)
             }
-            mEndPoint = newEndPoint
         }
         return this
     }

@@ -8,6 +8,7 @@ import com.example.basearchitecture.di.component.AppInjector
 import com.example.basearchitecture.ui.app.config.ReadFileConfig
 import com.example.basearchitecture.data.config.ConfigApp
 import com.example.basearchitecture.di.component.DaggerApplicationComponent
+import com.example.basearchitecture.ui.app.config.EnvironmentSelectedConfig
 import com.example.basearchitecture.ui.app.config.WifiConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -49,6 +50,7 @@ class BaseArchitectureApp : MultiDexApplication(), HasActivityInjector {
 
         ConfigApp.ourInstance
             .setCheckConnection(WifiConfig(this))
+            .setEnvironmentSelected(EnvironmentSelectedConfig())
 
         Timber.plant(Timber.DebugTree())
 

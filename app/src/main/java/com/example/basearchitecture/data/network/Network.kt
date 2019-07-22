@@ -7,14 +7,12 @@ import com.example.basearchitecture.data.models.error.AppError
 import com.example.basearchitecture.data.network.config.RetrofitClient
 import com.example.basearchitecture.data.network.interfaces.ConnectionApiService
 import com.example.basearchitecture.data.network.interfaces.INetwork
-import com.example.basearchitecture.environment.Environment
 import com.example.basearchitecture.data.network.enums.ApiServiceEnum
 import com.example.basearchitecture.data.network.enums.HttpMethod
 import com.example.basearchitecture.data.network.enums.MimeTypeEnum
 import com.example.basearchitecture.data.network.models.NetworkParams
 import com.example.basearchitecture.data.network.models.RequestData
 import com.example.basearchitecture.data.repositories.listeners.ResponseListener
-import com.example.basearchitecture.ui.app.config.EnvironmentUrlEnum
 import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
@@ -226,8 +224,8 @@ class Network @Inject constructor(private val retrofitClient: RetrofitClient, pr
      * @return boolean
      */
     private fun isSimulationRequest(): Boolean =
-        (mApiService!! == ApiServiceEnum.WIBE && Environment.WIBE_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
-                || (mApiService!! == ApiServiceEnum.AUCH && Environment.AUCH_ENVIRONMENT == EnvironmentUrlEnum.SIMULATION)
+        (mApiService!! == ApiServiceEnum.WIBE && ConfigApp.ourInstance.getEnvironmentSelected().isSimulation(ApiServiceEnum.WIBE))
+                || (mApiService!! == ApiServiceEnum.AUCH && ConfigApp.ourInstance.getEnvironmentSelected().isSimulation(ApiServiceEnum.AUCH))
 
     /**
      * Method to launch GET service

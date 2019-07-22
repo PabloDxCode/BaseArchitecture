@@ -1,5 +1,8 @@
 package com.example.basearchitecture.data.config
 
+/**
+ * ICheckConnection
+ */
 interface ICheckConnection {
 
     /**
